@@ -1,0 +1,22 @@
+version = '1.0'
+
+subprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+project(':content-template-engine') {
+   dependencies {
+       compile project(':content-api')
+   }
+}
+
+project(':content-template-provider') {
+    dependencies {
+        compile project(':content-api')
+    }
+}
