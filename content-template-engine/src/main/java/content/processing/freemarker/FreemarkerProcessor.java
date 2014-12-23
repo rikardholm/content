@@ -2,11 +2,14 @@ package content.processing.freemarker;
 
 import content.processing.ProcessingResult;
 import content.processing.Session;
+import content.processing.TemplateProcessingException;
 import content.processing.TextProcessor;
 import content.provisioning.TemplateProvider;
+import content.provisioning.TemplateProvisioningException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
@@ -36,8 +39,10 @@ public class FreemarkerProcessor implements TextProcessor {
     private Template getFreemarkerTemplate(String templatePath) {
         try {
             return configuration.getTemplate(templatePath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (FileNotFoundException e) {
+            throw new TemplateProvisioningException(e);
+        } catch (IOException d) {
+            throw new TemplateProcessingException(d);
         }
     }
 }
