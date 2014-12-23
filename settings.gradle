@@ -2,3 +2,5 @@ rootProject.name = 'content'
 
 include 'content-api', 'content-template-engine', 'content-template-provider'
 
+include 'content-integration-tests'
+
