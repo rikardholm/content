@@ -3,7 +3,6 @@ package content.provisioning.impl;
 import content.processing.Template;
 import content.provisioning.TemplateProvider;
 import content.provisioning.TemplateProvisioningException;
-import org.apache.commons.io.IOUtils;
 import org.glassfish.grizzly.PortRange;
 import org.glassfish.grizzly.http.server.CLStaticHttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -12,9 +11,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
