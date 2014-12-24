@@ -1,0 +1,1 @@
+Just some plain text with no freemarker expressions.

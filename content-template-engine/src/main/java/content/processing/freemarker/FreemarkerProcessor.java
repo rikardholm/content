@@ -20,6 +20,7 @@ public class FreemarkerProcessor implements TextProcessor {
         configuration = new Configuration(Configuration.VERSION_2_3_21);
         configuration.setTemplateLoader(new TemplateProviderTemplateLoader(templateProvider));
         configuration.setLocalizedLookup(false);
+        configuration.setTemplateUpdateDelay(0);
     }
 
     @Override

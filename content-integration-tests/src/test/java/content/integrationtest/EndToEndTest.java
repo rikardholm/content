@@ -1,52 +1,52 @@
 package content.integrationtest;
 
+import content.processing.PdfProcessor;
 import content.processing.TemplateProcessingException;
 import content.processing.TextProcessor;
 import content.processing.freemarker.FreemarkerProcessor;
+import content.processing.itext.ITextProcessor;
 import content.provisioning.TemplateProvider;
 import content.provisioning.TemplateProvisioningException;
+import content.provisioning.impl.CachingTemplateProviderWrapper;
 import content.provisioning.impl.HttpTemplateProvider;
-import org.glassfish.grizzly.Buffer;
 import org.glassfish.grizzly.Connection;
-import org.glassfish.grizzly.ConnectionProbe;
 import org.glassfish.grizzly.PortRange;
-import org.glassfish.grizzly.filterchain.BaseFilter;
-import org.glassfish.grizzly.filterchain.Filter;
-import org.glassfish.grizzly.filterchain.FilterChainContext;
-import org.glassfish.grizzly.filterchain.NextAction;
 import org.glassfish.grizzly.http.server.*;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class EndToEndTest {
 
+    public static CountingHttpProbe countingHttpProbe = new CountingHttpProbe();
     private static HttpServer httpServer;
 
     private TextProcessor textProcessor;
+    private PdfProcessor pdfProcessor;
     private final Map<String, Object> model = new HashMap<>();
 
     @BeforeClass
     public static void startServer() throws IOException {
         httpServer = HttpServer.createSimpleServer(null, new PortRange(6000, 6999));
+        CLStaticHttpHandler clStaticHttpHandler = new CLStaticHttpHandler(EndToEndTest.class.getClassLoader(), "/httpserver/");
+        clStaticHttpHandler.setFileCacheEnabled(false);
         httpServer.getServerConfiguration()
-                .addHttpHandler(new CLStaticHttpHandler(EndToEndTest.class.getClassLoader(), "/httpserver/"));
+                .addHttpHandler(clStaticHttpHandler);
         httpServer.getServerConfiguration()
                 .getMonitoringConfig()
                 .getWebServerConfig()
-                .addProbes(new CountingHttpProbe());
+                .addProbes(countingHttpProbe);
         httpServer.start();
-
-
-        Collection<NetworkListener> listeners = httpServer.getListeners();
-        NetworkListener networkListener = listeners.stream().findFirst().get();
-
-        String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
     }
 
     @Before
@@ -56,15 +56,12 @@ public class EndToEndTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        TemplateProvider templateProvider = new HttpTemplateProvider(server, "templates/");
+        TemplateProvider templateProvider = new CachingTemplateProviderWrapper(new HttpTemplateProvider(server, "templates/"), Duration.ofMillis(500));
 
         textProcessor = new FreemarkerProcessor(templateProvider);
-    }
+        pdfProcessor = new ITextProcessor(templateProvider);
 
-    @After
-    public void tearDown() throws Exception {
-
-
+        countingHttpProbe.clearCounters();
     }
 
     @AfterClass
@@ -94,12 +91,61 @@ public class EndToEndTest {
         textProcessor.process("my/path/corrupted-template.ftl", model);
     }
 
+    @Test
+    public void should_cache_template_for_a_while() throws Exception {
+        pdfProcessor.process("my/path/oo-test.pdf", model);
+        pdfProcessor.process("my/path/oo-test.pdf", model);
+        pdfProcessor.process("my/path/oo-test.pdf", model);
+
+        assertEquals(Integer.valueOf(1), countingHttpProbe.counters.get("/templates/my/path/oo-test.pdf"));
+    }
+
+    @Test
+    public void should_refresh_after_a_while() throws Exception {
+        pdfProcessor.process("my/path/oo-test.pdf", model);
+        pdfProcessor.process("my/path/oo-test.pdf", model);
+        pdfProcessor.process("my/path/oo-test.pdf", model);
+
+        assertEquals(Integer.valueOf(1), countingHttpProbe.counters.get("/templates/my/path/oo-test.pdf"));
+
+        Thread.sleep(500);
+
+        pdfProcessor.process("my/path/oo-test.pdf", model);
+        pdfProcessor.process("my/path/oo-test.pdf", model);
+        pdfProcessor.process("my/path/oo-test.pdf", model);
+
+        assertEquals(Integer.valueOf(2), countingHttpProbe.counters.get("/templates/my/path/oo-test.pdf"));
+    }
+
+    @Test
+    public void should_cache_freemarker_tamplates_for_a_while() {
+        textProcessor.process("my/path/no-model.ftl", model);
+        textProcessor.process("my/path/no-model.ftl", model);
+        textProcessor.process("my/path/no-model.ftl", model);
+
+        assertEquals(Integer.valueOf(1), countingHttpProbe.counters.get("/templates/my/path/no-model.ftl"));
+    }
+
     public static class CountingHttpProbe extends HttpServerProbe.Adapter {
+
+        public final Map<String, Integer> counters = new HashMap<>();
+
         @Override
         public void onRequestReceiveEvent(HttpServerFilter filter, Connection connection, Request request) {
-            System.out.println("uri = " + request.getRequestURI());
-            System.out.println("request.getRequestURL() = " + request.getRequestURL());
-            super.onRequestReceiveEvent(filter, connection, request);
+            String uri = request.getRequestURI();
+            System.out.println("uri = " + uri);
+            Integer count = counters.get(uri);
+            if (count == null) {
+                count = 0;
+            }
+
+            counters.put(uri, count + 1);
+        }
+
+        public void clearCounters() {
+            for (String uri : counters.keySet()) {
+                counters.put(uri, 0);
+            }
         }
     }
 
