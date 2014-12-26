@@ -4,7 +4,6 @@ import content.processing.TemplateProvisioningException;
 import content.processing.internal.HttpTemplateProvider;
 import content.processing.internal.ResponseTransform;
 import content.processing.internal.Template;
-import content.processing.text.internal.JmteProcessor;
 import content.test.HttpServerRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
