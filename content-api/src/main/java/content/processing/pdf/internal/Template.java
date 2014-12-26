@@ -6,4 +6,8 @@ public class Template {
     public Template(byte[] content) {
         this.content = content;
     }
+
+    public static interface TemplateProvider {
+        Template get(String path);
+    }
 }

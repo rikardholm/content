@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class HttpTemplateProvider implements TemplateProvider {
+public class HttpTemplateProvider implements Template.TemplateProvider {
     public static final int EOF = -1;
     public static final int BUFFER_SIZE = 4 * 1024
             ;
