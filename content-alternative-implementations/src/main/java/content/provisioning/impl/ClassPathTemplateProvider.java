@@ -1,12 +1,15 @@
 package content.provisioning.impl;
 
-import content.processing.Template;
-import content.provisioning.TemplateProvider;
+import content.processing.text.internal.Template;
+import content.processing.text.internal.TemplateProvider;
 import content.provisioning.TemplateProvisioningException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class ClassPathTemplateProvider implements TemplateProvider {
 
@@ -27,23 +30,25 @@ public class ClassPathTemplateProvider implements TemplateProvider {
             throw new TemplateProvisioningException("Template was not found: " + absolutePath);
         }
 
-        byte[] bytes = getBytes(inputStream);
+        String content = readContent(inputStream);
 
-        return new Template(bytes);
+        return new Template(content);
     }
 
-    private byte[] getBytes(InputStream inputStream) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[BUFFER_SIZE];
+    private String readContent(InputStream inputStream) {
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, UTF_8);
+        StringWriter stringWriter = new StringWriter();
+
+        char[] buffer = new char[BUFFER_SIZE];
         int read;
         try {
-            while (EOF != (read = inputStream.read(buffer))) {
-                byteArrayOutputStream.write(buffer, 0, read);
+            while (EOF != (read = inputStreamReader.read(buffer))) {
+                stringWriter.write(buffer, 0, read);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return byteArrayOutputStream.toByteArray();
+        return stringWriter.toString();
     }
 }

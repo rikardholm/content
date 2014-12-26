@@ -1,7 +1,7 @@
 package content.provisioning.impl;
 
-import content.processing.Template;
-import content.provisioning.TemplateProvider;
+import content.processing.text.internal.Template;
+import content.processing.text.internal.TemplateProvider;
 import content.provisioning.TemplateProvisioningException;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -9,14 +9,12 @@ import org.mockito.Mockito;
 import java.time.Duration;
 
 import static java.lang.Thread.sleep;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertArrayEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
 
 public class CachingTemplateProviderWrapperTest {
 
     private TemplateProvider backingProvider = Mockito.mock(TemplateProvider.class);
-    private Template template = new Template("The first template".getBytes(UTF_8));
+    private Template template = new Template("The first template");
 
     private TemplateProvider target = new CachingTemplateProviderWrapper(backingProvider, Duration.ofMillis(50));
 
@@ -26,7 +24,7 @@ public class CachingTemplateProviderWrapperTest {
 
         Template result = target.get("path/to/template");
 
-        assertArrayEquals(template.content, result.content);
+        assertEquals(template.content, result.content);
     }
 
     @Test
@@ -38,7 +36,7 @@ public class CachingTemplateProviderWrapperTest {
         target.get("path/to/template");
         Template result = target.get("path/to/template");
 
-        assertArrayEquals(template.content, result.content);
+        assertEquals(template.content, result.content);
     }
 
     @Test
@@ -67,7 +65,7 @@ public class CachingTemplateProviderWrapperTest {
     @Test
     public void should_flush_cache_after_some_duration() throws Exception {
         Mockito.when(backingProvider.get("path/to/template")).thenReturn(template);
-        byte[] newTemplateContent = "The newer template".getBytes(UTF_8);
+        String newTemplateContent = "The newer template";
         Template newTemplate = new Template(newTemplateContent);
 
         target.get("path/to/template");
@@ -77,6 +75,6 @@ public class CachingTemplateProviderWrapperTest {
 
         Template result = target.get("path/to/template");
 
-        assertArrayEquals(newTemplateContent, result.content);
+        assertEquals(newTemplateContent, result.content);
     }
 }

@@ -4,7 +4,9 @@ import content.processing.TemplateProcessingException;
 import content.processing.freemarker.FreemarkerProcessor;
 import content.processing.text.Processor;
 import content.processing.text.internal.HttpTemplateProvider;
+import content.processing.text.internal.TemplateProvider;
 import content.provisioning.TemplateProvisioningException;
+import content.provisioning.impl.CachingTemplateProviderWrapper;
 import org.glassfish.grizzly.Connection;
 import org.glassfish.grizzly.PortRange;
 import org.glassfish.grizzly.http.server.*;
@@ -14,6 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +30,6 @@ public class EndToEndTest {
     private static HttpServer httpServer;
 
     private Processor textProcessor;
-    private content.processing.pdf.Processor pdfProcessor;
     private final Map<String, Object> model = new HashMap<>();
 
     @BeforeClass
@@ -51,11 +53,8 @@ public class EndToEndTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        //TemplateProvider templateProvider = new CachingTemplateProviderWrapper(new HttpTemplateProvider(server, "templates/"), Duration.ofMillis(500));
-        content.processing.text.internal.TemplateProvider textTemplateProvider = new HttpTemplateProvider(server, "templates");
-        content.processing.pdf.internal.TemplateProvider pdfTemplateProvider = new content.processing.pdf.internal.HttpTemplateProvider(server, "templates");
+        TemplateProvider textTemplateProvider = new CachingTemplateProviderWrapper(new HttpTemplateProvider(server, "templates"), Duration.ofDays(500));
         textProcessor = new FreemarkerProcessor(textTemplateProvider);
-        pdfProcessor = new content.processing.pdf.internal.ITextProcessor(pdfTemplateProvider);
 
         countingHttpProbe.clearCounters();
     }
@@ -85,32 +84,6 @@ public class EndToEndTest {
     @Test(expected = TemplateProcessingException.class)
     public void should_throw_a_processing_exception_if_template_is_corrupted() throws Exception {
         textProcessor.template("my/path/corrupted-template.ftl").process(model);
-    }
-
-    @Test
-    public void should_cache_template_for_a_while() throws Exception {
-        pdfProcessor.template("my/path/oo-test.pdf").process(model);
-        pdfProcessor.template("my/path/oo-test.pdf").process(model);
-        pdfProcessor.template("my/path/oo-test.pdf").process(model);
-
-        assertEquals(Integer.valueOf(1), countingHttpProbe.counters.get("/templates/my/path/oo-test.pdf"));
-    }
-
-    @Test
-    public void should_refresh_after_a_while() throws Exception {
-        pdfProcessor.template("my/path/oo-test.pdf").process(model);
-        pdfProcessor.template("my/path/oo-test.pdf").process(model);
-        pdfProcessor.template("my/path/oo-test.pdf").process(model);
-
-        assertEquals(Integer.valueOf(1), countingHttpProbe.counters.get("/templates/my/path/oo-test.pdf"));
-
-        Thread.sleep(500);
-
-        pdfProcessor.template("my/path/oo-test.pdf").process(model);
-        pdfProcessor.template("my/path/oo-test.pdf").process(model);
-        pdfProcessor.template("my/path/oo-test.pdf").process(model);
-
-        assertEquals(Integer.valueOf(2), countingHttpProbe.counters.get("/templates/my/path/oo-test.pdf"));
     }
 
     @Test
