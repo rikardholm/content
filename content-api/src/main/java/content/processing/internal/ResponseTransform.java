@@ -1,4 +1,4 @@
-package content.processing.pdf.internal;
+package content.processing.internal;
 
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
@@ -6,17 +6,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Function;
 
-public class TemplateTransform implements Function<Response, Template> {
+public class ResponseTransform {
     private static final int EOF = -1;
     private static final int BUFFER_SIZE = 4 * 1024;
 
-    @Override
-    public Template apply(Response response) {
-        byte[] content = readByteArray(response);
-        return new Template(content);
+    public static Function<Response, byte[]> toByteArray() {
+        return ResponseTransform::toByteArray;
     }
 
-    private byte[] readByteArray(Response response) {
+    public static Function<Response, String> toAString() {
+        return ResponseTransform::toString;
+    }
+
+    public static String toString(Response response) {
+        return response.readEntity(String.class);
+    }
+
+    public static byte[] toByteArray(Response response) {
         ByteArrayOutputStream byteArrayOutputStream;
         try (InputStream inputStream = response.readEntity(InputStream.class)) {
             byteArrayOutputStream = new ByteArrayOutputStream();
