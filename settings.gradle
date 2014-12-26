@@ -1,4 +1,4 @@
 rootProject.name = 'content'
 
-include 'content-api', 'content-alternative-implementations'
+include 'content-engine', 'content-alternative-implementations'
 

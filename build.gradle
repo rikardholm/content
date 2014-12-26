@@ -8,9 +8,3 @@ subprojects {
         mavenCentral()
     }
 }
-
-project(':content-alternative-implementations') {
-   dependencies {
-       compile project(':content-api')
-   }
-}
