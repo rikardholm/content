@@ -1,9 +1,9 @@
 package content.processing.freemarker;
 
 import content.processing.TemplateProcessingException;
+import content.processing.TemplateProvisioningException;
 import content.processing.text.Processor;
 import content.processing.text.internal.TemplateProvider;
-import content.provisioning.TemplateProvisioningException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

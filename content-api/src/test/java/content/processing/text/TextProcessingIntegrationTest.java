@@ -1,8 +1,8 @@
 package content.processing.text;
 
-import content.processing.text.internal.JmteProcessor;
+import content.processing.TemplateProvisioningException;
 import content.processing.text.internal.HttpTemplateProvider;
-import content.provisioning.TemplateProvisioningException;
+import content.processing.text.internal.JmteProcessor;
 import content.test.HttpServerRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;

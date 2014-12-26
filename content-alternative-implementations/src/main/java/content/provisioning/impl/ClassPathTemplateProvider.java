@@ -1,8 +1,8 @@
 package content.provisioning.impl;
 
+import content.processing.TemplateProvisioningException;
 import content.processing.text.internal.Template;
 import content.processing.text.internal.TemplateProvider;
-import content.provisioning.TemplateProvisioningException;
 
 import java.io.IOException;
 import java.io.InputStream;

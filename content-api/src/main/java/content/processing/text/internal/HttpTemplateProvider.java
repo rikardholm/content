@@ -1,6 +1,6 @@
 package content.processing.text.internal;
 
-import content.provisioning.TemplateProvisioningException;
+import content.processing.TemplateProvisioningException;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

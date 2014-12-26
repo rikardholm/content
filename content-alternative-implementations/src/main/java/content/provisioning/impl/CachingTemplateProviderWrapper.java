@@ -4,9 +4,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
+import content.processing.TemplateProvisioningException;
 import content.processing.text.internal.Template;
 import content.processing.text.internal.TemplateProvider;
-import content.provisioning.TemplateProvisioningException;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;

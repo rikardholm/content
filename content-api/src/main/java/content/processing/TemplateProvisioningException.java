@@ -1,4 +1,4 @@
-package content.provisioning;
+package content.processing;
 
 public class TemplateProvisioningException extends RuntimeException {
     public TemplateProvisioningException(String message) {

@@ -1,8 +1,8 @@
 package content.processing.freemarker;
 
+import content.processing.TemplateProvisioningException;
 import content.processing.text.internal.Template;
 import content.processing.text.internal.TemplateProvider;
-import content.provisioning.TemplateProvisioningException;
 import freemarker.cache.TemplateLoader;
 
 import java.io.IOException;
