@@ -1,4 +1,4 @@
-package content.processing.internal;
+package content.processing.internal.provisioning;
 
 import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;

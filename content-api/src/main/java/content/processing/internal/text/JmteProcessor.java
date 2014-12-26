@@ -1,4 +1,4 @@
-package content.processing.text;
+package content.processing.internal.text;
 
 import com.floreysoft.jmte.Engine;
 import content.processing.Processor;

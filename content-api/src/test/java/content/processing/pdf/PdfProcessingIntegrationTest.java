@@ -1,9 +1,10 @@
 package content.processing.pdf;
 
-import content.processing.internal.HttpTemplateProvider;
-import content.processing.internal.ResponseTransform;
 import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
+import content.processing.internal.pdf.ITextProcessor;
+import content.processing.internal.provisioning.HttpTemplateProvider;
+import content.processing.internal.provisioning.ResponseTransform;
 import content.test.HttpServerRule;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;

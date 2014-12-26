@@ -1,4 +1,4 @@
-package content.processing.pdf;
+package content.processing.internal.pdf;
 
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;

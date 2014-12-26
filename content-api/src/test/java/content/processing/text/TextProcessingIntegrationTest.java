@@ -1,10 +1,11 @@
 package content.processing.text;
 
 import content.processing.TemplateProvisioningException;
-import content.processing.internal.HttpTemplateProvider;
-import content.processing.internal.ResponseTransform;
 import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
+import content.processing.internal.provisioning.HttpTemplateProvider;
+import content.processing.internal.provisioning.ResponseTransform;
+import content.processing.internal.text.JmteProcessor;
 import content.test.HttpServerRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
