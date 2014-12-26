@@ -7,17 +7,19 @@ import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class JmteProcessor implements Processor<String> {
 
     private TemplateProvider<String> templateProvider;
 
     public JmteProcessor(TemplateProvider<String> templateProvider) {
-        this.templateProvider = templateProvider;
+        this.templateProvider = Objects.requireNonNull(templateProvider);
     }
 
     @Override
     public Session<String> template(String templatePath) {
+        Objects.requireNonNull(templatePath);
         Template<String> template = templateProvider.get(templatePath);
 
         return new JmteSession(template);
@@ -33,6 +35,7 @@ public class JmteProcessor implements Processor<String> {
 
         @Override
         public String process(Map<String, Object> model) {
+            Objects.requireNonNull(model);
             return engine.transform(template.content, model);
         }
     }

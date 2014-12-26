@@ -11,16 +11,18 @@ import content.processing.internal.TemplateProvider;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 public class ITextProcessor implements Processor<byte[]> {
     private final TemplateProvider<byte[]> templateProvider;
 
     public ITextProcessor(TemplateProvider<byte[]> templateProvider) {
-        this.templateProvider = templateProvider;
+        this.templateProvider = Objects.requireNonNull(templateProvider);
     }
 
     @Override
     public Session<byte[]> template(String path) {
+        Objects.requireNonNull(path);
         Template<byte[]> template = templateProvider.get(path);
         return new ITextSession(template);
     }
@@ -34,6 +36,7 @@ public class ITextProcessor implements Processor<byte[]> {
 
         @Override
         public byte[] process(Map<String, Object> model) {
+            Objects.requireNonNull(model);
             PdfReader pdfReader;
             try {
                 pdfReader = new PdfReader(template.content);
