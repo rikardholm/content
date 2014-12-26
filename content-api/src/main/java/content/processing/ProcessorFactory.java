@@ -13,12 +13,12 @@ import java.util.function.Function;
 public class ProcessorFactory {
 
     public static Processor<byte[]> createPdfProcessor(String serverConnection) {
-        TemplateProvider<byte[]> templateProvider = httpTemplateProvider(serverConnection, transformTo(InputStream.class).andThen(Transform::toByteArray));
+        TemplateProvider<byte[]> templateProvider = httpTemplateProvider(serverConnection, readEntity(InputStream.class).andThen(Transform::toByteArray));
         return new ITextProcessor(templateProvider);
     }
 
     public static Processor<String> createTextProcessor(String serverConnection) {
-        TemplateProvider<String> templateProvider = httpTemplateProvider(serverConnection, transformTo(String.class));
+        TemplateProvider<String> templateProvider = httpTemplateProvider(serverConnection, readEntity(String.class));
         return new JmteProcessor(templateProvider);
     }
 
@@ -26,7 +26,7 @@ public class ProcessorFactory {
         return new HttpTemplateProvider<>(serverConnection, "templates", transformer);
     }
 
-    private static <T> Function<Response, T> transformTo(Class<T> type) {
+    private static <T> Function<Response, T> readEntity(Class<T> type) {
         return response -> response.readEntity(type);
     }
 }
