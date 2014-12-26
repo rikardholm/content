@@ -3,6 +3,7 @@ package content.processing.pdf;
 import content.processing.internal.HttpTemplateProvider;
 import content.processing.internal.ResponseTransform;
 import content.processing.internal.Template;
+import content.processing.internal.TemplateProvider;
 import content.test.HttpServerRule;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
@@ -10,9 +11,11 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import javax.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertTrue;
 
@@ -27,7 +30,9 @@ public class PdfProcessingIntegrationTest {
 
     @BeforeClass
     public static void createProcessor() {
-        processor = new ITextProcessor(new HttpTemplateProvider<>(httpServerRule.getServerConnection(), "templates", ResponseTransform.toByteArray().andThen(Template::new)));
+        Function<Response, Template<byte[]>> transform = ResponseTransform.toByteArray().andThen(Template::new);
+        TemplateProvider<byte[]> templateProvider = new HttpTemplateProvider<>(httpServerRule.getServerConnection(), "templates", transform);
+        processor = new ITextProcessor(templateProvider);
     }
 
     @Test

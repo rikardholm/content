@@ -4,13 +4,16 @@ import content.processing.TemplateProvisioningException;
 import content.processing.internal.HttpTemplateProvider;
 import content.processing.internal.ResponseTransform;
 import content.processing.internal.Template;
+import content.processing.internal.TemplateProvider;
 import content.test.HttpServerRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertTrue;
 
@@ -25,7 +28,9 @@ public class TextProcessingIntegrationTest {
 
     @BeforeClass
     public static void createProcessor() {
-        processor = new JmteProcessor(new HttpTemplateProvider<>(httpServerRule.getServerConnection(), "templates", ResponseTransform.toAString().andThen(Template::new)));
+        Function<Response, Template<String>> transform = ResponseTransform.toAString().andThen(Template::new);
+        TemplateProvider<String> templateProvider = new HttpTemplateProvider<>(httpServerRule.getServerConnection(), "templates", transform);
+        processor = new JmteProcessor(templateProvider);
     }
 
     @Test
