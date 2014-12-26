@@ -12,8 +12,7 @@ import java.io.InputStream;
 
 public class HttpTemplateProvider implements Template.TemplateProvider {
     public static final int EOF = -1;
-    public static final int BUFFER_SIZE = 4 * 1024
-            ;
+    public static final int BUFFER_SIZE = 4 * 1024;
     private final String serverConnection;
     private final String rootPath;
 
