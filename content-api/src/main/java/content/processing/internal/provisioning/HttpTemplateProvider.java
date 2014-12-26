@@ -13,9 +13,9 @@ import java.util.function.Function;
 public class HttpTemplateProvider<CONTENT> implements TemplateProvider<CONTENT> {
     private final String serverConnection;
     private final String rootPath;
-    private final Function<Response, Template<CONTENT>> transform;
+    private final Function<Response, CONTENT> transform;
 
-    public HttpTemplateProvider(String serverConnection, String rootPath, Function<Response, Template<CONTENT>> transform) {
+    public HttpTemplateProvider(String serverConnection, String rootPath, Function<Response, CONTENT> transform) {
         this.serverConnection = serverConnection;
         this.rootPath = rootPath;
         this.transform = transform;
@@ -31,6 +31,6 @@ public class HttpTemplateProvider<CONTENT> implements TemplateProvider<CONTENT> 
             throw new TemplateProvisioningException("Could not fetch template from " + webTarget.getUri() + " Status: " + response.getStatus() + " " + response.getStatusInfo());
         }
 
-        return transform.apply(response);
+        return new Template<>(transform.apply(response));
     }
 }

@@ -1,15 +1,12 @@
 package content.processing;
 
 import content.processing.freemarker.FreemarkerProcessor;
-import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
 import content.processing.internal.provisioning.HttpTemplateProvider;
 import content.processing.juel.JuelProcessor;
 import content.provisioning.impl.CachingTemplateProviderWrapper;
 
-import javax.ws.rs.core.Response;
 import java.time.Duration;
-import java.util.function.Function;
 
 public class Factory {
 
@@ -23,11 +20,7 @@ public class Factory {
         return new FreemarkerProcessor(templateProvider);
     }
 
-    private static Function<Response, String> toAString() {
-        return response -> response.readEntity(String.class);
-    }
-
     private static HttpTemplateProvider<String> httpTemplateProvider(String serverConnection) {
-        return new HttpTemplateProvider<>(serverConnection, "templates", toAString().andThen(Template::new));
+        return new HttpTemplateProvider<>(serverConnection, "templates", response -> response.readEntity(String.class));
     }
 }
