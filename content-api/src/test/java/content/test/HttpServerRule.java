@@ -12,7 +12,7 @@ import java.util.Map;
 public class HttpServerRule extends ExternalResource {
 
     private HttpServer httpServer;
-    private CountingHttpProbe countingHttpProbe = new CountingHttpProbe();
+    public final CountingHttpProbe countingHttpProbe = new CountingHttpProbe();
 
     public String getServerConnection() {
         return serverConnection;

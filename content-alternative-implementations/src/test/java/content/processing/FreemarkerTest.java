@@ -1,71 +1,28 @@
 package content.processing;
 
-import content.processing.freemarker.FreemarkerProcessor;
-import content.processing.internal.Template;
-import content.processing.internal.TemplateProvider;
-import content.processing.internal.provisioning.HttpTemplateProvider;
-import content.provisioning.impl.CachingTemplateProviderWrapper;
-import org.glassfish.grizzly.Connection;
-import org.glassfish.grizzly.PortRange;
-import org.glassfish.grizzly.http.server.*;
-import org.junit.AfterClass;
+import content.test.HttpServerRule;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
-import javax.ws.rs.core.Response;
-import java.io.IOException;
-import java.time.Duration;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class FreemarkerTest {
 
-    public static CountingHttpProbe countingHttpProbe = new CountingHttpProbe();
-    private static HttpServer httpServer;
+    @ClassRule
+    public static HttpServerRule httpServerRule = new HttpServerRule();
 
     private Processor<String> textProcessor;
     private final Map<String, Object> model = new HashMap<>();
 
-    @BeforeClass
-    public static void startServer() throws IOException {
-        httpServer = HttpServer.createSimpleServer(null, new PortRange(6000, 6999));
-        CLStaticHttpHandler clStaticHttpHandler = new CLStaticHttpHandler(FreemarkerTest.class.getClassLoader(), "/httpserver/");
-        clStaticHttpHandler.setFileCacheEnabled(false);
-        httpServer.getServerConfiguration()
-                .addHttpHandler(clStaticHttpHandler);
-        httpServer.getServerConfiguration()
-                .getMonitoringConfig()
-                .getWebServerConfig()
-                .addProbes(countingHttpProbe);
-        httpServer.start();
-    }
 
     @Before
     public void setUp() throws Exception {
-        Collection<NetworkListener> listeners = httpServer.getListeners();
-        NetworkListener networkListener = listeners.stream().findFirst().get();
-
-        String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
-
-        TemplateProvider<String> textTemplateProvider = new CachingTemplateProviderWrapper<>(new HttpTemplateProvider<>(server, "templates", toAString().andThen(Template::new)), Duration.ofDays(500));
-        textProcessor = new FreemarkerProcessor(textTemplateProvider);
-
-        countingHttpProbe.clearCounters();
-    }
-
-    private Function<Response, String> toAString() {
-        return response -> response.readEntity(String.class);
-    }
-
-    @AfterClass
-    public static void shutdownServer() {
-        httpServer.shutdownNow();
+        textProcessor = Factory.freemarkerProcessor(httpServerRule.getServerConnection());
     }
 
     @Test
@@ -96,31 +53,6 @@ public class FreemarkerTest {
         textProcessor.template("my/path/no-model.ftl").process(model);
         textProcessor.template("my/path/no-model.ftl").process(model);
 
-        assertEquals(Integer.valueOf(1), countingHttpProbe.counters.get("/templates/my/path/no-model.ftl"));
+        assertEquals(Integer.valueOf(1), httpServerRule.countingHttpProbe.counters.get("/templates/my/path/no-model.ftl"));
     }
-
-    public static class CountingHttpProbe extends HttpServerProbe.Adapter {
-
-        public final Map<String, Integer> counters = new HashMap<>();
-
-        @Override
-        public void onRequestReceiveEvent(HttpServerFilter filter, Connection connection, Request request) {
-            String uri = request.getRequestURI();
-            System.out.println("uri = " + uri);
-            Integer count = counters.get(uri);
-            if (count == null) {
-                count = 0;
-            }
-
-            counters.put(uri, count + 1);
-        }
-
-        public void clearCounters() {
-            for (String uri : counters.keySet()) {
-                counters.put(uri, 0);
-            }
-        }
-    }
-
-
 }
