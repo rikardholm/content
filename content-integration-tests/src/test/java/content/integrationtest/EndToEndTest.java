@@ -1,5 +1,6 @@
 package content.integrationtest;
 
+import content.processing.Processor;
 import content.processing.TemplateProcessingException;
 import content.processing.TemplateProvisioningException;
 import content.processing.freemarker.FreemarkerProcessor;
@@ -7,7 +8,6 @@ import content.processing.internal.HttpTemplateProvider;
 import content.processing.internal.ResponseTransform;
 import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
-import content.processing.text.Processor;
 import content.provisioning.impl.CachingTemplateProviderWrapper;
 import org.glassfish.grizzly.Connection;
 import org.glassfish.grizzly.PortRange;
@@ -31,7 +31,7 @@ public class EndToEndTest {
     public static CountingHttpProbe countingHttpProbe = new CountingHttpProbe();
     private static HttpServer httpServer;
 
-    private Processor textProcessor;
+    private Processor<String> textProcessor;
     private final Map<String, Object> model = new HashMap<>();
 
     @BeforeClass

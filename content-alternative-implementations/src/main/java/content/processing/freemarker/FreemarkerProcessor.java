@@ -1,9 +1,10 @@
 package content.processing.freemarker;
 
+import content.processing.Processor;
+import content.processing.Session;
 import content.processing.TemplateProcessingException;
 import content.processing.TemplateProvisioningException;
 import content.processing.internal.TemplateProvider;
-import content.processing.text.Processor;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 
-public class FreemarkerProcessor implements Processor {
+public class FreemarkerProcessor implements Processor<String> {
     private final Configuration configuration;
 
     public FreemarkerProcessor(TemplateProvider<String> templateProvider) {
@@ -24,7 +25,7 @@ public class FreemarkerProcessor implements Processor {
     }
 
     @Override
-    public content.processing.text.Session template(String templatePath) {
+    public Session<String> template(String templatePath) {
         Template fTemplate = getFreemarkerTemplate(templatePath);
         return new IFreemarkerSession(fTemplate);
     }
@@ -39,7 +40,7 @@ public class FreemarkerProcessor implements Processor {
         }
     }
 
-    private class IFreemarkerSession implements content.processing.text.Session {
+    private class IFreemarkerSession implements Session<String> {
         private final Template fTemplate;
 
         public IFreemarkerSession(Template fTemplate) {

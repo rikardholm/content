@@ -1,10 +1,10 @@
 package content.integrationtest;
 
+import content.processing.Processor;
 import content.processing.internal.HttpTemplateProvider;
 import content.processing.internal.ResponseTransform;
 import content.processing.internal.Template;
 import content.processing.juel.JuelProcessor;
-import content.processing.text.Processor;
 import org.glassfish.grizzly.PortRange;
 import org.glassfish.grizzly.http.server.CLStaticHttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -26,7 +26,7 @@ public class JuelTest {
     public static EndToEndTest.CountingHttpProbe countingHttpProbe = new EndToEndTest.CountingHttpProbe();
     private static HttpServer httpServer;
 
-    private Processor textProcessor;
+    private Processor<String> textProcessor;
     private final Map<String, Object> model = new HashMap<>();
 
     @BeforeClass
