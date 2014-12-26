@@ -1,6 +1,7 @@
 package content.processing.text.internal;
 
 import com.floreysoft.jmte.Engine;
+import content.processing.internal.TemplateProvider;
 import content.processing.text.Processor;
 import content.processing.text.Session;
 
@@ -8,9 +9,9 @@ import java.util.Map;
 
 public class JmteProcessor implements Processor {
 
-    private Template.TemplateProvider templateProvider;
+    private TemplateProvider<Template> templateProvider;
 
-    public JmteProcessor(Template.TemplateProvider templateProvider) {
+    public JmteProcessor(TemplateProvider templateProvider) {
         this.templateProvider = templateProvider;
     }
 

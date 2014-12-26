@@ -2,6 +2,7 @@ package content.processing.freemarker;
 
 import content.processing.TemplateProcessingException;
 import content.processing.TemplateProvisioningException;
+import content.processing.internal.TemplateProvider;
 import content.processing.text.Processor;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class FreemarkerProcessor implements Processor {
     private final Configuration configuration;
 
-    public FreemarkerProcessor(content.processing.text.internal.Template.TemplateProvider templateProvider) {
+    public FreemarkerProcessor(TemplateProvider<content.processing.text.internal.Template> templateProvider) {
         configuration = new Configuration(Configuration.VERSION_2_3_21);
         configuration.setTemplateLoader(new TemplateProviderTemplateLoader(templateProvider));
         configuration.setLocalizedLookup(false);

@@ -1,5 +1,6 @@
 package content.processing.juel;
 
+import content.processing.internal.TemplateProvider;
 import content.processing.text.Processor;
 import content.processing.text.internal.Template;
 import de.odysseus.el.util.SimpleContext;
@@ -11,9 +12,9 @@ import java.util.Map;
 
 public class JuelProcessor implements Processor {
 
-    private Template.TemplateProvider templateProvider;
+    private TemplateProvider<Template> templateProvider;
 
-    public JuelProcessor(Template.TemplateProvider templateProvider) {
+    public JuelProcessor(TemplateProvider<Template> templateProvider) {
         this.templateProvider = templateProvider;
     }
 

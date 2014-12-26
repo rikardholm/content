@@ -3,6 +3,7 @@ package content.processing.pdf.internal;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import content.processing.internal.TemplateProvider;
 import content.processing.pdf.Processor;
 import content.processing.pdf.Session;
 
@@ -11,9 +12,9 @@ import java.io.IOException;
 import java.util.Map;
 
 public class ITextProcessor implements Processor {
-    private final Template.TemplateProvider templateProvider;
+    private final TemplateProvider<Template> templateProvider;
 
-    public ITextProcessor(Template.TemplateProvider templateProvider) {
+    public ITextProcessor(TemplateProvider templateProvider) {
         this.templateProvider = templateProvider;
     }
 

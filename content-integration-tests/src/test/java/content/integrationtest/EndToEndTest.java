@@ -3,9 +3,11 @@ package content.integrationtest;
 import content.processing.TemplateProcessingException;
 import content.processing.TemplateProvisioningException;
 import content.processing.freemarker.FreemarkerProcessor;
+import content.processing.internal.HttpTemplateProvider;
+import content.processing.internal.TemplateProvider;
 import content.processing.text.Processor;
-import content.processing.text.internal.HttpTemplateProvider;
 import content.processing.text.internal.Template;
+import content.processing.text.internal.TemplateTransform;
 import content.provisioning.impl.CachingTemplateProviderWrapper;
 import org.glassfish.grizzly.Connection;
 import org.glassfish.grizzly.PortRange;
@@ -53,7 +55,7 @@ public class EndToEndTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        Template.TemplateProvider textTemplateProvider = new CachingTemplateProviderWrapper(new HttpTemplateProvider(server, "templates"), Duration.ofDays(500));
+        TemplateProvider<Template> textTemplateProvider = new CachingTemplateProviderWrapper<>(new HttpTemplateProvider<>(server, "templates", new TemplateTransform()), Duration.ofDays(500));
         textProcessor = new FreemarkerProcessor(textTemplateProvider);
 
         countingHttpProbe.clearCounters();

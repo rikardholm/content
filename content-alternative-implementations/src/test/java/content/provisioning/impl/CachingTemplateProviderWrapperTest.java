@@ -1,6 +1,7 @@
 package content.provisioning.impl;
 
 import content.processing.TemplateProvisioningException;
+import content.processing.internal.TemplateProvider;
 import content.processing.text.internal.Template;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -12,10 +13,10 @@ import static org.junit.Assert.assertEquals;
 
 public class CachingTemplateProviderWrapperTest {
 
-    private Template.TemplateProvider backingProvider = Mockito.mock(Template.TemplateProvider.class);
+    private TemplateProvider<Template> backingProvider = Mockito.mock(TemplateProvider.class);
     private Template template = new Template("The first template");
 
-    private Template.TemplateProvider target = new CachingTemplateProviderWrapper(backingProvider, Duration.ofMillis(50));
+    private TemplateProvider<Template> target = new CachingTemplateProviderWrapper<>(backingProvider, Duration.ofMillis(50));
 
     @Test
     public void should_return_Template_from_backing_service() throws Exception {

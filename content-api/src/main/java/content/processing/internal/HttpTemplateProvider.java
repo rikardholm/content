@@ -1,4 +1,4 @@
-package content.processing.text.internal;
+package content.processing.internal;
 
 import content.processing.TemplateProvisioningException;
 
@@ -6,18 +6,21 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
+import java.util.function.Function;
 
-public class HttpTemplateProvider implements Template.TemplateProvider {
+public class HttpTemplateProvider<TEMPLATE> implements TemplateProvider<TEMPLATE> {
     private final String serverConnection;
     private final String rootPath;
+    private final Function<Response, TEMPLATE> transform;
 
-    public HttpTemplateProvider(String serverConnection, String rootPath) {
+    public HttpTemplateProvider(String serverConnection, String rootPath, Function<Response, TEMPLATE> transform) {
         this.serverConnection = serverConnection;
         this.rootPath = rootPath;
+        this.transform = transform;
     }
 
     @Override
-    public Template get(String path) {
+    public TEMPLATE get(String path) {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(serverConnection).path(rootPath).path(path);
         Response response = webTarget.request().get();
@@ -26,8 +29,6 @@ public class HttpTemplateProvider implements Template.TemplateProvider {
             throw new TemplateProvisioningException("Could not fetch template from " + webTarget.getUri() + " Status: " + response.getStatus() + " " + response.getStatusInfo());
         }
 
-        String content = response.readEntity(String.class);
-
-        return new Template(content);
+        return transform.apply(response);
     }
 }

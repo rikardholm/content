@@ -1,7 +1,8 @@
 package content.processing.pdf;
 
-import content.processing.pdf.internal.HttpTemplateProvider;
+import content.processing.internal.HttpTemplateProvider;
 import content.processing.pdf.internal.ITextProcessor;
+import content.processing.pdf.internal.TemplateTransform;
 import content.test.HttpServerRule;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
@@ -26,7 +27,7 @@ public class PdfProcessingIntegrationTest {
 
     @BeforeClass
     public static void createProcessor() {
-        processor = new ITextProcessor(new HttpTemplateProvider(httpServerRule.getServerConnection(), "templates"));
+        processor = new ITextProcessor(new HttpTemplateProvider<>(httpServerRule.getServerConnection(), "templates", new TemplateTransform()));
     }
 
     @Test
