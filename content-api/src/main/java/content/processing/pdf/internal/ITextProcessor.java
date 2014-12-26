@@ -3,16 +3,16 @@ package content.processing.pdf.internal;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import content.processing.Processor;
+import content.processing.Session;
 import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
-import content.processing.pdf.Processor;
-import content.processing.pdf.Session;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
-public class ITextProcessor implements Processor {
+public class ITextProcessor implements Processor<byte[]> {
     private final TemplateProvider<byte[]> templateProvider;
 
     public ITextProcessor(TemplateProvider<byte[]> templateProvider) {
@@ -20,12 +20,12 @@ public class ITextProcessor implements Processor {
     }
 
     @Override
-    public Session template(String path) {
+    public Session<byte[]> template(String path) {
         Template<byte[]> template = templateProvider.get(path);
         return new ITextSession(template);
     }
 
-    private class ITextSession implements Session {
+    private class ITextSession implements Session<byte[]> {
         private final Template<byte[]> template;
 
         public ITextSession(Template<byte[]> template) {

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TextProcessingIntegrationTest {
 
-    private static Processor processor;
+    private static content.processing.Processor<String> processor;
 
     @ClassRule
     public static HttpServerRule httpServerRule = new HttpServerRule();

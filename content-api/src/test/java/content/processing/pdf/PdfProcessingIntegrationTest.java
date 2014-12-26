@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 public class PdfProcessingIntegrationTest {
 
-    private static Processor processor;
+    private static content.processing.Processor<byte[]> processor;
 
     @ClassRule
     public static HttpServerRule httpServerRule = new HttpServerRule();

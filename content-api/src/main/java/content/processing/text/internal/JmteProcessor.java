@@ -1,14 +1,14 @@
 package content.processing.text.internal;
 
 import com.floreysoft.jmte.Engine;
+import content.processing.Processor;
+import content.processing.Session;
 import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
-import content.processing.text.Processor;
-import content.processing.text.Session;
 
 import java.util.Map;
 
-public class JmteProcessor implements Processor {
+public class JmteProcessor implements Processor<String> {
 
     private TemplateProvider<String> templateProvider;
 
@@ -17,13 +17,13 @@ public class JmteProcessor implements Processor {
     }
 
     @Override
-    public Session template(String templatePath) {
+    public Session<String> template(String templatePath) {
         Template<String> template = templateProvider.get(templatePath);
 
         return new JmteSession(template);
     }
 
-    public static class JmteSession implements Session {
+    public static class JmteSession implements Session<String> {
         private final Template<String> template;
         private Engine engine = Engine.createCachingEngine();
 
