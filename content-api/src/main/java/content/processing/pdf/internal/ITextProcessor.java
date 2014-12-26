@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.util.Map;
 
 public class ITextProcessor implements Processor {
-    private final TemplateProvider<NewTemplate<byte[]>> templateProvider;
+    private final TemplateProvider<byte[]> templateProvider;
 
-    public ITextProcessor(TemplateProvider<NewTemplate<byte[]>> templateProvider) {
+    public ITextProcessor(TemplateProvider<byte[]> templateProvider) {
         this.templateProvider = templateProvider;
     }
 

@@ -1,5 +1,5 @@
 package content.processing.internal;
 
-public interface TemplateProvider<TEMPLATE> {
-    TEMPLATE get(String path);
+public interface TemplateProvider<CONTENT> {
+    NewTemplate<CONTENT> get(String path);
 }

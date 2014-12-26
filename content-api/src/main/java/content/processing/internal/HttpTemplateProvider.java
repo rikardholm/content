@@ -8,19 +8,19 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.util.function.Function;
 
-public class HttpTemplateProvider<TEMPLATE> implements TemplateProvider<TEMPLATE> {
+public class HttpTemplateProvider<CONTENT> implements TemplateProvider<CONTENT> {
     private final String serverConnection;
     private final String rootPath;
-    private final Function<Response, TEMPLATE> transform;
+    private final Function<Response, NewTemplate<CONTENT>> transform;
 
-    public HttpTemplateProvider(String serverConnection, String rootPath, Function<Response, TEMPLATE> transform) {
+    public HttpTemplateProvider(String serverConnection, String rootPath, Function<Response, NewTemplate<CONTENT>> transform) {
         this.serverConnection = serverConnection;
         this.rootPath = rootPath;
         this.transform = transform;
     }
 
     @Override
-    public TEMPLATE get(String path) {
+    public NewTemplate<CONTENT> get(String path) {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(serverConnection).path(rootPath).path(path);
         Response response = webTarget.request().get();
