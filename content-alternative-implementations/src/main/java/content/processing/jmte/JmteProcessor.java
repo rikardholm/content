@@ -1,18 +1,14 @@
 package content.processing.jmte;
 
 import com.floreysoft.jmte.Engine;
-import content.processing.ProcessingResult;
-import content.processing.Session;
-import content.processing.Template;
-import content.processing.TextProcessor;
-import content.processing.result.ByteArrayProcessingResult;
-import content.provisioning.TemplateProvider;
+import content.processing.text.Processor;
+import content.processing.text.Session;
+import content.processing.text.internal.Template;
+import content.processing.text.internal.TemplateProvider;
 
 import java.util.Map;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-public class JmteProcessor implements TextProcessor {
+public class JmteProcessor implements Processor {
     private final TemplateProvider templateProvider;
 
     public JmteProcessor(TemplateProvider templateProvider) {
@@ -20,18 +16,24 @@ public class JmteProcessor implements TextProcessor {
     }
 
     @Override
-    public ProcessingResult process(String templatePath, Map<String, Object> model) {
+    public Session template(String templatePath) {
         Template template = templateProvider.get(templatePath);
-        String content = new String(template.content, UTF_8);
-
-        Engine engine = new Engine();
-        String result = engine.transform(content, model);
-
-        return ByteArrayProcessingResult.from(result.getBytes(UTF_8));
+        return new JmteSession(template);
     }
 
-    @Override
-    public Session session(String templatePath) {
-        return null;
+    public static class JmteSession implements Session {
+
+        private Template template;
+
+        public JmteSession(Template template) {
+            this.template = template;
+        }
+
+        @Override
+        public String process(Map<String, Object> model) {
+            Engine engine = new Engine();
+
+            return engine.transform(template.content, model);
+        }
     }
 }

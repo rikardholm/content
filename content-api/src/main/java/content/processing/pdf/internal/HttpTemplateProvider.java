@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class HttpTemplateProvider implements TemplateProvider {
+    public static final int EOF = -1;
+    public static final int BUFFER_SIZE = 4 * 1024
+            ;
     private final String serverConnection;
     private final String rootPath;
 
@@ -38,9 +41,9 @@ public class HttpTemplateProvider implements TemplateProvider {
         ByteArrayOutputStream byteArrayOutputStream;
         try (InputStream inputStream = response.readEntity(InputStream.class)) {
             byteArrayOutputStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[256];
+            byte[] buffer = new byte[BUFFER_SIZE];
             int read;
-            while (-1 != (read = inputStream.read(buffer))) {
+            while (EOF != (read = inputStream.read(buffer))) {
                 byteArrayOutputStream.write(buffer, 0, read);
             }
         } catch (IOException e) {

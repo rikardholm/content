@@ -6,9 +6,6 @@ import content.provisioning.TemplateProvisioningException;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import java.nio.charset.StandardCharsets;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.*;
 
 public class ClassPathTemplateProviderTest {

@@ -3,14 +3,15 @@ package content.provisioning.impl;
 import content.processing.Template;
 import content.provisioning.TemplateProvider;
 import content.provisioning.TemplateProvisioningException;
-import org.apache.commons.io.IOUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Optional;
 
 public class ClassPathTemplateProvider implements TemplateProvider {
 
+    public static final int BUFFER_SIZE = 4 * 1024;
+    public static final int EOF = -1;
     private final String rootPath;
 
     public ClassPathTemplateProvider(String rootPath) {
@@ -32,12 +33,17 @@ public class ClassPathTemplateProvider implements TemplateProvider {
     }
 
     private byte[] getBytes(InputStream inputStream) {
-        byte[] bytes;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int read;
         try {
-            bytes = IOUtils.toByteArray(inputStream);
+            while (EOF != (read = inputStream.read(buffer))) {
+                byteArrayOutputStream.write(buffer, 0, read);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return bytes;
+
+        return byteArrayOutputStream.toByteArray();
     }
 }

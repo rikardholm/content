@@ -1,10 +1,8 @@
 package content.integrationtest;
 
-import content.processing.TextProcessor;
 import content.processing.jmte.JmteProcessor;
-import content.provisioning.TemplateProvider;
-import content.provisioning.impl.CachingTemplateProviderWrapper;
-import content.provisioning.impl.HttpTemplateProvider;
+import content.processing.text.Processor;
+import content.processing.text.internal.HttpTemplateProvider;
 import org.glassfish.grizzly.PortRange;
 import org.glassfish.grizzly.http.server.CLStaticHttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -15,7 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +23,7 @@ public class JmteTest {
     public static EndToEndTest.CountingHttpProbe countingHttpProbe = new EndToEndTest.CountingHttpProbe();
     private static HttpServer httpServer;
 
-    private TextProcessor textProcessor;
+    private Processor textProcessor;
     private final Map<String, Object> model = new HashMap<>();
 
     @BeforeClass
@@ -50,9 +47,7 @@ public class JmteTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        TemplateProvider templateProvider = new CachingTemplateProviderWrapper(new HttpTemplateProvider(server, "templates/"), Duration.ofMillis(500));
-
-        textProcessor = new JmteProcessor(templateProvider);
+        textProcessor = new JmteProcessor(new HttpTemplateProvider(server, "templates"));
 
         countingHttpProbe.clearCounters();
     }
@@ -69,7 +64,7 @@ public class JmteTest {
         model.put("customer", new Person("Rikard"));
         model.put("ceo", new Person("Svante"));
 
-        String content = textProcessor.process("my/path/juel-template", model).asString();
+        String content = textProcessor.template("my/path/juel-template").process(model);
 
         System.out.println(content);
 

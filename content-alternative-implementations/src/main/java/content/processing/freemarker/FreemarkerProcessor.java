@@ -4,6 +4,7 @@ import content.processing.ProcessingResult;
 import content.processing.Session;
 import content.processing.TemplateProcessingException;
 import content.processing.TextProcessor;
+import content.processing.text.Processor;
 import content.provisioning.TemplateProvider;
 import content.provisioning.TemplateProvisioningException;
 import freemarker.template.Configuration;
@@ -13,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
-public class FreemarkerProcessor implements TextProcessor {
+public class FreemarkerProcessor implements Processor {
     private final Configuration configuration;
 
     public FreemarkerProcessor(TemplateProvider templateProvider) {
@@ -45,5 +46,10 @@ public class FreemarkerProcessor implements TextProcessor {
         } catch (IOException d) {
             throw new TemplateProcessingException(d);
         }
+    }
+
+    @Override
+    public content.processing.text.Session template(String templatePath) {
+        return null;
     }
 }

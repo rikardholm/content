@@ -5,6 +5,7 @@ import content.processing.TemplateProcessingException;
 import content.processing.TextProcessor;
 import content.processing.freemarker.FreemarkerProcessor;
 import content.processing.itext.ITextProcessor;
+import content.processing.text.Processor;
 import content.provisioning.TemplateProvider;
 import content.provisioning.TemplateProvisioningException;
 import content.provisioning.impl.CachingTemplateProviderWrapper;
@@ -31,8 +32,8 @@ public class EndToEndTest {
     public static CountingHttpProbe countingHttpProbe = new CountingHttpProbe();
     private static HttpServer httpServer;
 
-    private TextProcessor textProcessor;
-    private PdfProcessor pdfProcessor;
+    private Processor textProcessor;
+    private content.processing.pdf.Processor pdfProcessor;
     private final Map<String, Object> model = new HashMap<>();
 
     @BeforeClass
