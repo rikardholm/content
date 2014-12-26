@@ -1,7 +1,7 @@
 package content.provisioning.impl;
 
 import content.processing.TemplateProvisioningException;
-import content.processing.internal.NewTemplate;
+import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class ClassPathTemplateProvider<CONTENT> implements TemplateProvider<CONT
     }
 
     @Override
-    public NewTemplate<CONTENT> get(String path) {
+    public Template<CONTENT> get(String path) {
         String absolutePath = rootPath + path;
         InputStream inputStream = ClassPathTemplateProvider.class.getResourceAsStream(absolutePath);
 
@@ -32,7 +32,7 @@ public class ClassPathTemplateProvider<CONTENT> implements TemplateProvider<CONT
 
         String content = readContent(inputStream);
 
-        return new NewTemplate(content);
+        return new Template(content);
     }
 
     private String readContent(InputStream inputStream) {

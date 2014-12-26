@@ -1,7 +1,7 @@
 package content.processing.jmte;
 
 import com.floreysoft.jmte.Engine;
-import content.processing.internal.NewTemplate;
+import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
 import content.processing.text.Processor;
 import content.processing.text.Session;
@@ -17,15 +17,15 @@ public class JmteProcessor implements Processor {
 
     @Override
     public Session template(String templatePath) {
-        NewTemplate<String> template = templateProvider.get(templatePath);
+        Template<String> template = templateProvider.get(templatePath);
         return new JmteSession(template);
     }
 
     public static class JmteSession implements Session {
 
-        private NewTemplate<String> template;
+        private Template<String> template;
 
-        public JmteSession(NewTemplate<String> template) {
+        public JmteSession(Template<String> template) {
             this.template = template;
         }
 

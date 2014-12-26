@@ -11,16 +11,16 @@ import java.util.function.Function;
 public class HttpTemplateProvider<CONTENT> implements TemplateProvider<CONTENT> {
     private final String serverConnection;
     private final String rootPath;
-    private final Function<Response, NewTemplate<CONTENT>> transform;
+    private final Function<Response, Template<CONTENT>> transform;
 
-    public HttpTemplateProvider(String serverConnection, String rootPath, Function<Response, NewTemplate<CONTENT>> transform) {
+    public HttpTemplateProvider(String serverConnection, String rootPath, Function<Response, Template<CONTENT>> transform) {
         this.serverConnection = serverConnection;
         this.rootPath = rootPath;
         this.transform = transform;
     }
 
     @Override
-    public NewTemplate<CONTENT> get(String path) {
+    public Template<CONTENT> get(String path) {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(serverConnection).path(rootPath).path(path);
         Response response = webTarget.request().get();

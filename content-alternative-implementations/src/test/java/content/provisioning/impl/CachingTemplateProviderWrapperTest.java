@@ -1,7 +1,7 @@
 package content.provisioning.impl;
 
 import content.processing.TemplateProvisioningException;
-import content.processing.internal.NewTemplate;
+import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class CachingTemplateProviderWrapperTest {
 
     private TemplateProvider<String> backingProvider = Mockito.mock(TemplateProvider.class);
-    private NewTemplate<String> template = new NewTemplate<>("The first template");
+    private Template<String> template = new Template<>("The first template");
 
     private TemplateProvider<String> target = new CachingTemplateProviderWrapper<>(backingProvider, Duration.ofMillis(50));
 
@@ -22,7 +22,7 @@ public class CachingTemplateProviderWrapperTest {
     public void should_return_Template_from_backing_service() throws Exception {
         Mockito.when(backingProvider.get("path/to/template")).thenReturn(template);
 
-        NewTemplate<String> result = target.get("path/to/template");
+        Template<String> result = target.get("path/to/template");
 
         assertEquals(template.content, result.content);
     }
@@ -34,7 +34,7 @@ public class CachingTemplateProviderWrapperTest {
                 .thenThrow(TemplateProvisioningException.class);
 
         target.get("path/to/template");
-        NewTemplate<String> result = target.get("path/to/template");
+        Template<String> result = target.get("path/to/template");
 
         assertEquals(template.content, result.content);
     }
@@ -66,14 +66,14 @@ public class CachingTemplateProviderWrapperTest {
     public void should_flush_cache_after_some_duration() throws Exception {
         Mockito.when(backingProvider.get("path/to/template")).thenReturn(template);
         String newTemplateContent = "The newer template";
-        NewTemplate<String> newTemplate = new NewTemplate<>(newTemplateContent);
+        Template<String> newTemplate = new Template<>(newTemplateContent);
 
         target.get("path/to/template");
         Mockito.when(backingProvider.get("path/to/template")).thenReturn(newTemplate);
 
         sleep(100);
 
-        NewTemplate<String> result = target.get("path/to/template");
+        Template<String> result = target.get("path/to/template");
 
         assertEquals(newTemplateContent, result.content);
     }

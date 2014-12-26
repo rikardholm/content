@@ -1,6 +1,6 @@
 package content.processing.juel;
 
-import content.processing.internal.NewTemplate;
+import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
 import content.processing.text.Processor;
 import de.odysseus.el.util.SimpleContext;
@@ -20,15 +20,15 @@ public class JuelProcessor implements Processor {
 
     @Override
     public content.processing.text.Session template(String templatePath) {
-        NewTemplate<String> template = templateProvider.get(templatePath);
+        Template<String> template = templateProvider.get(templatePath);
 
         return new JuelSession(template);
     }
 
     private class JuelSession implements content.processing.text.Session {
-        private final NewTemplate<String> template;
+        private final Template<String> template;
 
-        public JuelSession(NewTemplate<String> template) {
+        public JuelSession(Template<String> template) {
             this.template = template;
         }
 

@@ -1,8 +1,8 @@
 package content.integrationtest;
 
 import content.processing.internal.HttpTemplateProvider;
-import content.processing.internal.NewTemplate;
 import content.processing.internal.ResponseTransform;
+import content.processing.internal.Template;
 import content.processing.jmte.JmteProcessor;
 import content.processing.text.Processor;
 import org.glassfish.grizzly.PortRange;
@@ -49,7 +49,7 @@ public class JmteTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        textProcessor = new JmteProcessor(new HttpTemplateProvider<>(server, "templates", ResponseTransform.toAString().andThen(NewTemplate::new)));
+        textProcessor = new JmteProcessor(new HttpTemplateProvider<>(server, "templates", ResponseTransform.toAString().andThen(Template::new)));
 
         countingHttpProbe.clearCounters();
     }

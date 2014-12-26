@@ -4,8 +4,8 @@ import content.processing.TemplateProcessingException;
 import content.processing.TemplateProvisioningException;
 import content.processing.freemarker.FreemarkerProcessor;
 import content.processing.internal.HttpTemplateProvider;
-import content.processing.internal.NewTemplate;
 import content.processing.internal.ResponseTransform;
+import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
 import content.processing.text.Processor;
 import content.provisioning.impl.CachingTemplateProviderWrapper;
@@ -55,7 +55,7 @@ public class EndToEndTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        TemplateProvider<String> textTemplateProvider = new CachingTemplateProviderWrapper<>(new HttpTemplateProvider<>(server, "templates", ResponseTransform.toAString().andThen(NewTemplate::new)), Duration.ofDays(500));
+        TemplateProvider<String> textTemplateProvider = new CachingTemplateProviderWrapper<>(new HttpTemplateProvider<>(server, "templates", ResponseTransform.toAString().andThen(Template::new)), Duration.ofDays(500));
         textProcessor = new FreemarkerProcessor(textTemplateProvider);
 
         countingHttpProbe.clearCounters();
