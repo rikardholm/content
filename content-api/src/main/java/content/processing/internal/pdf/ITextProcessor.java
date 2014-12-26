@@ -5,6 +5,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import content.processing.Processor;
 import content.processing.Session;
+import content.processing.TemplateProcessingException;
 import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
 
@@ -41,7 +42,7 @@ public class ITextProcessor implements Processor<byte[]> {
             try {
                 pdfReader = new PdfReader(template.content);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new TemplateProcessingException(e);
             }
 
             PdfStamper pdfStamper;
@@ -49,7 +50,7 @@ public class ITextProcessor implements Processor<byte[]> {
             try {
                 pdfStamper = new PdfStamper(pdfReader, byteArrayOutputStream);
             } catch (DocumentException | IOException e) {
-                throw new RuntimeException(e);
+                throw new TemplateProcessingException(e);
             }
 
             try {
@@ -57,12 +58,12 @@ public class ITextProcessor implements Processor<byte[]> {
                     pdfStamper.getAcroFields().setField(entry.getKey(), entry.getValue().toString());
                 }
             } catch (IOException | DocumentException e) {
-                throw new RuntimeException(e);
+                throw new TemplateProcessingException(e);
             }
             try {
                 pdfStamper.close();
             } catch (DocumentException | IOException e) {
-                throw new RuntimeException(e);
+                throw new TemplateProcessingException(e);
             }
             pdfReader.close();
 
