@@ -1,17 +1,16 @@
 package content.processing.freemarker;
 
-import content.processing.ProcessingResult;
-import content.processing.Session;
 import content.processing.TemplateProcessingException;
-import content.processing.TextProcessor;
 import content.processing.text.Processor;
-import content.provisioning.TemplateProvider;
+import content.processing.text.internal.TemplateProvider;
 import content.provisioning.TemplateProvisioningException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Map;
 
 public class FreemarkerProcessor implements Processor {
@@ -25,17 +24,9 @@ public class FreemarkerProcessor implements Processor {
     }
 
     @Override
-    public ProcessingResult process(String templatePath, Map<String, Object> model) {
-        try (Session session = session(templatePath)) {
-            return session.process(model);
-        }
-    }
-
-    @Override
-    public Session session(String templatePath) {
+    public content.processing.text.Session template(String templatePath) {
         Template fTemplate = getFreemarkerTemplate(templatePath);
-
-        return new FreemarkerSession(fTemplate);
+        return new IFreemarkerSession(fTemplate);
     }
 
     private Template getFreemarkerTemplate(String templatePath) {
@@ -48,8 +39,24 @@ public class FreemarkerProcessor implements Processor {
         }
     }
 
-    @Override
-    public content.processing.text.Session template(String templatePath) {
-        return null;
+    private class IFreemarkerSession implements content.processing.text.Session {
+        private final Template fTemplate;
+
+        public IFreemarkerSession(Template fTemplate) {
+            this.fTemplate = fTemplate;
+        }
+
+        @Override
+        public String process(Map<String, Object> model) {
+            StringWriter stringWriter = new StringWriter();
+
+            try {
+                fTemplate.process(model, stringWriter);
+            } catch (TemplateException | IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            return stringWriter.toString();
+        }
     }
 }
