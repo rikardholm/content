@@ -24,7 +24,7 @@ import java.util.function.Function;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class EndToEndTest {
+public class FreemarkerTest {
 
     public static CountingHttpProbe countingHttpProbe = new CountingHttpProbe();
     private static HttpServer httpServer;
@@ -35,7 +35,7 @@ public class EndToEndTest {
     @BeforeClass
     public static void startServer() throws IOException {
         httpServer = HttpServer.createSimpleServer(null, new PortRange(6000, 6999));
-        CLStaticHttpHandler clStaticHttpHandler = new CLStaticHttpHandler(EndToEndTest.class.getClassLoader(), "/httpserver/");
+        CLStaticHttpHandler clStaticHttpHandler = new CLStaticHttpHandler(FreemarkerTest.class.getClassLoader(), "/httpserver/");
         clStaticHttpHandler.setFileCacheEnabled(false);
         httpServer.getServerConfiguration()
                 .addHttpHandler(clStaticHttpHandler);

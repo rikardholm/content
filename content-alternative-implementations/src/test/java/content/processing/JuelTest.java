@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 public class JuelTest {
 
-    public static EndToEndTest.CountingHttpProbe countingHttpProbe = new EndToEndTest.CountingHttpProbe();
+    public static FreemarkerTest.CountingHttpProbe countingHttpProbe = new FreemarkerTest.CountingHttpProbe();
     private static HttpServer httpServer;
 
     private Processor<String> textProcessor;
@@ -32,7 +32,7 @@ public class JuelTest {
     @BeforeClass
     public static void startServer() throws IOException {
         httpServer = HttpServer.createSimpleServer(null, new PortRange(6000, 6999));
-        CLStaticHttpHandler clStaticHttpHandler = new CLStaticHttpHandler(EndToEndTest.class.getClassLoader(), "/httpserver/");
+        CLStaticHttpHandler clStaticHttpHandler = new CLStaticHttpHandler(FreemarkerTest.class.getClassLoader(), "/httpserver/");
         clStaticHttpHandler.setFileCacheEnabled(false);
         httpServer.getServerConfiguration()
                 .addHttpHandler(clStaticHttpHandler);
