@@ -1,21 +1,19 @@
 package content.processing.internal.provisioning;
 
-import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ResponseTransform {
+public class Transform {
     private static final int EOF = -1;
     private static final int BUFFER_SIZE = 4 * 1024;
 
-    public static byte[] toByteArray(Response response) {
-        ByteArrayOutputStream byteArrayOutputStream;
-        try (InputStream inputStream = response.readEntity(InputStream.class)) {
-            byteArrayOutputStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int read;
-            while (EOF != (read = inputStream.read(buffer))) {
+    public static byte[] toByteArray(InputStream inputStream) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int read;
+        try (InputStream inner = inputStream) {
+            while (EOF != (read = inner.read(buffer))) {
                 byteArrayOutputStream.write(buffer, 0, read);
             }
         } catch (IOException e) {
@@ -24,4 +22,5 @@ public class ResponseTransform {
 
         return byteArrayOutputStream.toByteArray();
     }
+
 }

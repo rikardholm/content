@@ -4,7 +4,6 @@ import content.processing.freemarker.FreemarkerProcessor;
 import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
 import content.processing.internal.provisioning.HttpTemplateProvider;
-import content.processing.internal.provisioning.ResponseTransform;
 import content.provisioning.impl.CachingTemplateProviderWrapper;
 import org.glassfish.grizzly.Connection;
 import org.glassfish.grizzly.PortRange;
