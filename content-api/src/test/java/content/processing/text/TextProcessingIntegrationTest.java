@@ -1,7 +1,7 @@
 package content.processing.text;
 
-import content.processing.text.internal.processing.jmte.JmteProcessor;
-import content.processing.text.internal.provisioning.HttpTemplateProvider;
+import content.processing.text.internal.JmteProcessor;
+import content.processing.text.internal.HttpTemplateProvider;
 import content.provisioning.TemplateProvisioningException;
 import content.test.HttpServerRule;
 import org.junit.BeforeClass;
@@ -24,7 +24,7 @@ public class TextProcessingIntegrationTest {
 
     @BeforeClass
     public static void createProcessor() {
-        processor = new JmteProcessor(new HttpTemplateProvider(httpServerRule.getServerConnection(), "/templates"));
+        processor = new JmteProcessor(new HttpTemplateProvider(httpServerRule.getServerConnection(), "templates"));
     }
 
     @Test

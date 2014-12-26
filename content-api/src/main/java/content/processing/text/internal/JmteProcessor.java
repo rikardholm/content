@@ -1,10 +1,8 @@
-package content.processing.text.internal.processing.jmte;
+package content.processing.text.internal;
 
 import com.floreysoft.jmte.Engine;
 import content.processing.text.Processor;
 import content.processing.text.Session;
-import content.processing.text.internal.Template;
-import content.processing.text.internal.TemplateProvider;
 
 import java.util.Map;
 
