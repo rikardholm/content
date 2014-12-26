@@ -1,8 +1,5 @@
-package content.integrationtest;
+package content.processing;
 
-import content.processing.Processor;
-import content.processing.TemplateProcessingException;
-import content.processing.TemplateProvisioningException;
 import content.processing.freemarker.FreemarkerProcessor;
 import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;

@@ -1,4 +1,4 @@
-package content.integrationtest;
+package content.processing;
 
 public class Person {
     private String firstName;

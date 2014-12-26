@@ -1,6 +1,5 @@
-package content.integrationtest;
+package content.processing;
 
-import content.processing.Processor;
 import content.processing.internal.Template;
 import content.processing.internal.provisioning.HttpTemplateProvider;
 import content.processing.internal.provisioning.ResponseTransform;
