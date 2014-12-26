@@ -9,7 +9,7 @@ subprojects {
     }
 }
 
-project(':content-template-engine') {
+project(':content-alternative-implementations') {
    dependencies {
        compile project(':content-api')
    }
@@ -24,6 +24,6 @@ project(':content-template-provider') {
 project(':content-integration-tests') {
     dependencies {
         testCompile project(':content-api')
-        testCompile project(':content-template-engine'), project(':content-template-provider')
+        testCompile project(':content-alternative-implementations'), project(':content-template-provider')
     }
 }
