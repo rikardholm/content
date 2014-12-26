@@ -54,7 +54,6 @@ public class ITextProcessor implements Processor {
             } catch (IOException | DocumentException e) {
                 throw new RuntimeException(e);
             }
-
             try {
                 pdfStamper.close();
             } catch (DocumentException | IOException e) {

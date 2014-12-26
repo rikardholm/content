@@ -6,4 +6,5 @@ dependencies {
 
     testCompile 'junit:junit:4.11'
     testCompile 'org.glassfish.grizzly:grizzly-http-server:2.3.17'
+    testCompile 'org.apache.pdfbox:pdfbox:1.8.8'
 }

@@ -3,13 +3,17 @@ package content.processing.pdf;
 import content.processing.pdf.internal.HttpTemplateProvider;
 import content.processing.pdf.internal.ITextProcessor;
 import content.test.HttpServerRule;
-import org.junit.Assert;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.util.PDFTextStripper;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 public class PdfProcessingIntegrationTest {
 
@@ -27,8 +31,15 @@ public class PdfProcessingIntegrationTest {
 
     @Test
     public void should_fetch_and_process_a_standard_template() throws Exception {
+        model.put("name", "Rikard");
         byte[] result = processor.template("test/path/standard.pdf").process(model);
 
-        Assert.assertTrue(result.length > 0);
+        PDDocument document = PDDocument.load(new ByteArrayInputStream(result));
+
+        String text = new PDFTextStripper().getText(document);
+
+        document.close();
+
+        assertTrue(text.contains("Magic Test Forms"));
     }
 }
