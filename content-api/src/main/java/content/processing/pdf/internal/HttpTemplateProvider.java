@@ -29,6 +29,12 @@ public class HttpTemplateProvider implements TemplateProvider {
             throw new TemplateProvisioningException("Could not fetch template from " + webTarget.getUri() + " Status: " + response.getStatus() + " " + response.getStatusInfo());
         }
 
+        byte[] content = readByteArray(response);
+
+        return new Template(content);
+    }
+
+    private byte[] readByteArray(Response response) {
         ByteArrayOutputStream byteArrayOutputStream;
         try (InputStream inputStream = response.readEntity(InputStream.class)) {
             byteArrayOutputStream = new ByteArrayOutputStream();
@@ -41,6 +47,6 @@ public class HttpTemplateProvider implements TemplateProvider {
             throw new RuntimeException(e);
         }
 
-        return new Template(byteArrayOutputStream.toByteArray());
+        return byteArrayOutputStream.toByteArray();
     }
 }
