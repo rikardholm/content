@@ -1,0 +1,8 @@
+Hej ${customer.firstName},
+
+Ditt konto ${customer.accountNumber} har uppdaterats.
+
+Mvh,
+
+${employee.firstName}
+Telefon: ${employee.phoneNumber}
