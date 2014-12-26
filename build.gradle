@@ -14,10 +14,3 @@ project(':content-alternative-implementations') {
        compile project(':content-api')
    }
 }
-
-project(':content-integration-tests') {
-    dependencies {
-        testCompile project(':content-api')
-        testCompile project(':content-alternative-implementations')
-    }
-}
