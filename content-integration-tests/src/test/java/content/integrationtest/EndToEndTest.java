@@ -1,15 +1,10 @@
 package content.integrationtest;
 
-import content.processing.PdfProcessor;
 import content.processing.TemplateProcessingException;
-import content.processing.TextProcessor;
 import content.processing.freemarker.FreemarkerProcessor;
-import content.processing.itext.ITextProcessor;
 import content.processing.text.Processor;
-import content.provisioning.TemplateProvider;
+import content.processing.text.internal.HttpTemplateProvider;
 import content.provisioning.TemplateProvisioningException;
-import content.provisioning.impl.CachingTemplateProviderWrapper;
-import content.provisioning.impl.HttpTemplateProvider;
 import org.glassfish.grizzly.Connection;
 import org.glassfish.grizzly.PortRange;
 import org.glassfish.grizzly.http.server.*;
@@ -19,7 +14,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,10 +51,11 @@ public class EndToEndTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        TemplateProvider templateProvider = new CachingTemplateProviderWrapper(new HttpTemplateProvider(server, "templates/"), Duration.ofMillis(500));
-
-        textProcessor = new FreemarkerProcessor(templateProvider);
-        pdfProcessor = new ITextProcessor(templateProvider);
+        //TemplateProvider templateProvider = new CachingTemplateProviderWrapper(new HttpTemplateProvider(server, "templates/"), Duration.ofMillis(500));
+        content.processing.text.internal.TemplateProvider textTemplateProvider = new HttpTemplateProvider(server, "templates");
+        content.processing.pdf.internal.TemplateProvider pdfTemplateProvider = new content.processing.pdf.internal.HttpTemplateProvider(server, "templates");
+        textProcessor = new FreemarkerProcessor(textTemplateProvider);
+        pdfProcessor = new content.processing.pdf.internal.ITextProcessor(pdfTemplateProvider);
 
         countingHttpProbe.clearCounters();
     }
@@ -75,7 +70,7 @@ public class EndToEndTest {
         model.put("customer", new Person("Rikard"));
         model.put("ceo", new Person("Svante"));
 
-        String content = textProcessor.process("my/path/welcome-email.ftl", model).asString();
+        String content = textProcessor.template("my/path/welcome-email.ftl").process(model);
 
         System.out.println(content);
 
@@ -84,45 +79,45 @@ public class EndToEndTest {
 
     @Test(expected = TemplateProvisioningException.class)
     public void should_throw_a_provision_exception_if_template_is_unknown() throws Exception {
-        textProcessor.process("my/path/non-existing", model);
+        textProcessor.template("my/path/non-existing").process(model);
     }
 
     @Test(expected = TemplateProcessingException.class)
     public void should_throw_a_processing_exception_if_template_is_corrupted() throws Exception {
-        textProcessor.process("my/path/corrupted-template.ftl", model);
+        textProcessor.template("my/path/corrupted-template.ftl").process(model);
     }
 
     @Test
     public void should_cache_template_for_a_while() throws Exception {
-        pdfProcessor.process("my/path/oo-test.pdf", model);
-        pdfProcessor.process("my/path/oo-test.pdf", model);
-        pdfProcessor.process("my/path/oo-test.pdf", model);
+        pdfProcessor.template("my/path/oo-test.pdf").process(model);
+        pdfProcessor.template("my/path/oo-test.pdf").process(model);
+        pdfProcessor.template("my/path/oo-test.pdf").process(model);
 
         assertEquals(Integer.valueOf(1), countingHttpProbe.counters.get("/templates/my/path/oo-test.pdf"));
     }
 
     @Test
     public void should_refresh_after_a_while() throws Exception {
-        pdfProcessor.process("my/path/oo-test.pdf", model);
-        pdfProcessor.process("my/path/oo-test.pdf", model);
-        pdfProcessor.process("my/path/oo-test.pdf", model);
+        pdfProcessor.template("my/path/oo-test.pdf").process(model);
+        pdfProcessor.template("my/path/oo-test.pdf").process(model);
+        pdfProcessor.template("my/path/oo-test.pdf").process(model);
 
         assertEquals(Integer.valueOf(1), countingHttpProbe.counters.get("/templates/my/path/oo-test.pdf"));
 
         Thread.sleep(500);
 
-        pdfProcessor.process("my/path/oo-test.pdf", model);
-        pdfProcessor.process("my/path/oo-test.pdf", model);
-        pdfProcessor.process("my/path/oo-test.pdf", model);
+        pdfProcessor.template("my/path/oo-test.pdf").process(model);
+        pdfProcessor.template("my/path/oo-test.pdf").process(model);
+        pdfProcessor.template("my/path/oo-test.pdf").process(model);
 
         assertEquals(Integer.valueOf(2), countingHttpProbe.counters.get("/templates/my/path/oo-test.pdf"));
     }
 
     @Test
     public void should_cache_freemarker_tamplates_for_a_while() {
-        textProcessor.process("my/path/no-model.ftl", model);
-        textProcessor.process("my/path/no-model.ftl", model);
-        textProcessor.process("my/path/no-model.ftl", model);
+        textProcessor.template("my/path/no-model.ftl").process(model);
+        textProcessor.template("my/path/no-model.ftl").process(model);
+        textProcessor.template("my/path/no-model.ftl").process(model);
 
         assertEquals(Integer.valueOf(1), countingHttpProbe.counters.get("/templates/my/path/no-model.ftl"));
     }

@@ -1,4 +1,9 @@
 package content.processing;
 
-public interface PdfProcessor extends Processor {
+import java.util.Map;
+
+public interface PdfProcessor {
+    ProcessingResult process(String templatePath, Map<String, Object> model);
+
+    Session session(String templatePath);
 }

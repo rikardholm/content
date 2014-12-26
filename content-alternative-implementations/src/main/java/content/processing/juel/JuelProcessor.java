@@ -1,11 +1,8 @@
 package content.processing.juel;
 
-import content.processing.ProcessingResult;
-import content.processing.Session;
-import content.processing.Template;
-import content.processing.TextProcessor;
-import content.processing.result.ByteArrayProcessingResult;
-import content.provisioning.TemplateProvider;
+import content.processing.text.Processor;
+import content.processing.text.internal.Template;
+import content.processing.text.internal.TemplateProvider;
 import de.odysseus.el.util.SimpleContext;
 
 import javax.el.ELContext;
@@ -13,9 +10,7 @@ import javax.el.ExpressionFactory;
 import javax.el.ValueExpression;
 import java.util.Map;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-public class JuelProcessor implements TextProcessor {
+public class JuelProcessor implements Processor {
 
     private TemplateProvider templateProvider;
 
@@ -24,25 +19,32 @@ public class JuelProcessor implements TextProcessor {
     }
 
     @Override
-    public ProcessingResult process(String templatePath, Map<String, Object> model) {
+    public content.processing.text.Session template(String templatePath) {
         Template template = templateProvider.get(templatePath);
-        String content = new String(template.content, UTF_8);
 
-        ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
-
-        ELContext elContext = new SimpleContext();
-
-        for (Map.Entry<String, Object> entry : model.entrySet()) {
-            elContext.getVariableMapper().setVariable(entry.getKey(), expressionFactory.createValueExpression(entry.getValue(), entry.getValue().getClass()));
-        }
-
-        ValueExpression valueExpression = expressionFactory.createValueExpression(elContext, content, String.class);
-
-        return ByteArrayProcessingResult.from(valueExpression.getValue(elContext).toString().getBytes(UTF_8));
+        return new JuelSession(template);
     }
 
-    @Override
-    public Session session(String templatePath) {
-        return null;
+    private class JuelSession implements content.processing.text.Session {
+        private final Template template;
+
+        public JuelSession(Template template) {
+            this.template = template;
+        }
+
+        @Override
+        public String process(Map<String, Object> model) {
+            ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
+
+            ELContext elContext = new SimpleContext();
+
+            for (Map.Entry<String, Object> entry : model.entrySet()) {
+                elContext.getVariableMapper().setVariable(entry.getKey(), expressionFactory.createValueExpression(entry.getValue(), entry.getValue().getClass()));
+            }
+
+            ValueExpression valueExpression = expressionFactory.createValueExpression(elContext, template.content, String.class);
+
+            return (String) valueExpression.getValue(elContext);
+        }
     }
 }
