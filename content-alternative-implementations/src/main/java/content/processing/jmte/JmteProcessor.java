@@ -4,14 +4,13 @@ import com.floreysoft.jmte.Engine;
 import content.processing.text.Processor;
 import content.processing.text.Session;
 import content.processing.text.internal.Template;
-import content.processing.text.internal.TemplateProvider;
 
 import java.util.Map;
 
 public class JmteProcessor implements Processor {
-    private final TemplateProvider templateProvider;
+    private final Template.TemplateProvider templateProvider;
 
-    public JmteProcessor(TemplateProvider templateProvider) {
+    public JmteProcessor(Template.TemplateProvider templateProvider) {
         this.templateProvider = templateProvider;
     }
 

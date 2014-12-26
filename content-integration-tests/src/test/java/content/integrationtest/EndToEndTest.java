@@ -5,7 +5,7 @@ import content.processing.TemplateProvisioningException;
 import content.processing.freemarker.FreemarkerProcessor;
 import content.processing.text.Processor;
 import content.processing.text.internal.HttpTemplateProvider;
-import content.processing.text.internal.TemplateProvider;
+import content.processing.text.internal.Template;
 import content.provisioning.impl.CachingTemplateProviderWrapper;
 import org.glassfish.grizzly.Connection;
 import org.glassfish.grizzly.PortRange;
@@ -53,7 +53,7 @@ public class EndToEndTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        TemplateProvider textTemplateProvider = new CachingTemplateProviderWrapper(new HttpTemplateProvider(server, "templates"), Duration.ofDays(500));
+        Template.TemplateProvider textTemplateProvider = new CachingTemplateProviderWrapper(new HttpTemplateProvider(server, "templates"), Duration.ofDays(500));
         textProcessor = new FreemarkerProcessor(textTemplateProvider);
 
         countingHttpProbe.clearCounters();

@@ -2,7 +2,6 @@ package content.provisioning.impl;
 
 import content.processing.TemplateProvisioningException;
 import content.processing.text.internal.Template;
-import content.processing.text.internal.TemplateProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +10,7 @@ import java.io.StringWriter;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class ClassPathTemplateProvider implements TemplateProvider {
+public class ClassPathTemplateProvider implements Template.TemplateProvider {
 
     public static final int BUFFER_SIZE = 4 * 1024;
     public static final int EOF = -1;

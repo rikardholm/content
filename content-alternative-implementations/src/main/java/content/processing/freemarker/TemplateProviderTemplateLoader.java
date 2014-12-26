@@ -2,7 +2,6 @@ package content.processing.freemarker;
 
 import content.processing.TemplateProvisioningException;
 import content.processing.text.internal.Template;
-import content.processing.text.internal.TemplateProvider;
 import freemarker.cache.TemplateLoader;
 
 import java.io.IOException;
@@ -10,9 +9,9 @@ import java.io.Reader;
 import java.io.StringReader;
 
 public class TemplateProviderTemplateLoader implements TemplateLoader {
-    private TemplateProvider templateProvider;
+    private Template.TemplateProvider templateProvider;
 
-    public TemplateProviderTemplateLoader(TemplateProvider templateProvider) {
+    public TemplateProviderTemplateLoader(Template.TemplateProvider templateProvider) {
         this.templateProvider = templateProvider;
     }
 

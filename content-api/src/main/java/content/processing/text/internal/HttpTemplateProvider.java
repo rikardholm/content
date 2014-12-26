@@ -7,7 +7,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-public class HttpTemplateProvider implements TemplateProvider {
+public class HttpTemplateProvider implements Template.TemplateProvider {
     private final String serverConnection;
     private final String rootPath;
 

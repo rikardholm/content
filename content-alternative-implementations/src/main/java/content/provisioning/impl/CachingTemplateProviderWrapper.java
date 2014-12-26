@@ -6,16 +6,15 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import content.processing.TemplateProvisioningException;
 import content.processing.text.internal.Template;
-import content.processing.text.internal.TemplateProvider;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-public class CachingTemplateProviderWrapper implements TemplateProvider {
+public class CachingTemplateProviderWrapper implements Template.TemplateProvider {
 
     private final LoadingCache<String, Template> cache;
 
-    public CachingTemplateProviderWrapper(TemplateProvider templateProvider, Duration cacheDuration) {
+    public CachingTemplateProviderWrapper(Template.TemplateProvider templateProvider, Duration cacheDuration) {
         cache = CacheBuilder.newBuilder()
                 .refreshAfterWrite(cacheDuration.toMillis(), TimeUnit.MILLISECONDS)
                 .build(CacheLoader.from(templateProvider::get));

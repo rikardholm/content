@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class JmteProcessor implements Processor {
 
-    private TemplateProvider templateProvider;
+    private Template.TemplateProvider templateProvider;
 
-    public JmteProcessor(TemplateProvider templateProvider) {
+    public JmteProcessor(Template.TemplateProvider templateProvider) {
         this.templateProvider = templateProvider;
     }
 
