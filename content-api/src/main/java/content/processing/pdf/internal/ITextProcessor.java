@@ -3,6 +3,7 @@ package content.processing.pdf.internal;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import content.processing.internal.NewTemplate;
 import content.processing.internal.TemplateProvider;
 import content.processing.pdf.Processor;
 import content.processing.pdf.Session;
@@ -12,22 +13,22 @@ import java.io.IOException;
 import java.util.Map;
 
 public class ITextProcessor implements Processor {
-    private final TemplateProvider<Template> templateProvider;
+    private final TemplateProvider<NewTemplate<byte[]>> templateProvider;
 
-    public ITextProcessor(TemplateProvider templateProvider) {
+    public ITextProcessor(TemplateProvider<NewTemplate<byte[]>> templateProvider) {
         this.templateProvider = templateProvider;
     }
 
     @Override
     public Session template(String path) {
-        Template template = templateProvider.get(path);
+        NewTemplate<byte[]> template = templateProvider.get(path);
         return new ITextSession(template);
     }
 
     private class ITextSession implements Session {
-        private final Template template;
+        private final NewTemplate<byte[]> template;
 
-        public ITextSession(Template template) {
+        public ITextSession(NewTemplate<byte[]> template) {
             this.template = template;
         }
 
