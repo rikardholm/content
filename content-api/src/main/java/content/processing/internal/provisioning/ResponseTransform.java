@@ -9,10 +9,6 @@ public class ResponseTransform {
     private static final int EOF = -1;
     private static final int BUFFER_SIZE = 4 * 1024;
 
-    public static String toString(Response response) {
-        return response.readEntity(String.class);
-    }
-
     public static byte[] toByteArray(Response response) {
         ByteArrayOutputStream byteArrayOutputStream;
         try (InputStream inputStream = response.readEntity(InputStream.class)) {

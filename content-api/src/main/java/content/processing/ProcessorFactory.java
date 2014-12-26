@@ -18,7 +18,7 @@ public class ProcessorFactory {
     }
 
     public static Processor<String> createTextProcessor(String serverConnection) {
-        TemplateProvider<String> templateProvider = httpTemplateProvider(serverConnection, ResponseTransform::toString);
+        TemplateProvider<String> templateProvider = httpTemplateProvider(serverConnection, response -> response.readEntity(String.class));
         return new JmteProcessor(templateProvider);
     }
 

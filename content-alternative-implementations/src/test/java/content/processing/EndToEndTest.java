@@ -61,7 +61,7 @@ public class EndToEndTest {
     }
 
     private Function<Response, String> toAString() {
-        return ResponseTransform::toString;
+        return response -> response.readEntity(String.class);
     }
 
     @AfterClass
