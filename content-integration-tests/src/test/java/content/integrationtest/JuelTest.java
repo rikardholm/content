@@ -14,10 +14,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertTrue;
 
@@ -50,9 +52,13 @@ public class JuelTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        textProcessor = new JuelProcessor(new HttpTemplateProvider<>(server, "templates", ResponseTransform.toAString().andThen(Template::new)));
+        textProcessor = new JuelProcessor(new HttpTemplateProvider<>(server, "templates", toAString().andThen(Template::new)));
 
         countingHttpProbe.clearCounters();
+    }
+
+    private Function<Response, String> toAString() {
+        return ResponseTransform::toString;
     }
 
 

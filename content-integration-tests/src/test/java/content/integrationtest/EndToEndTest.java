@@ -17,11 +17,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -55,10 +57,14 @@ public class EndToEndTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        TemplateProvider<String> textTemplateProvider = new CachingTemplateProviderWrapper<>(new HttpTemplateProvider<>(server, "templates", ResponseTransform.toAString().andThen(Template::new)), Duration.ofDays(500));
+        TemplateProvider<String> textTemplateProvider = new CachingTemplateProviderWrapper<>(new HttpTemplateProvider<>(server, "templates", toAString().andThen(Template::new)), Duration.ofDays(500));
         textProcessor = new FreemarkerProcessor(textTemplateProvider);
 
         countingHttpProbe.clearCounters();
+    }
+
+    private Function<Response, String> toAString() {
+        return ResponseTransform::toString;
     }
 
     @AfterClass

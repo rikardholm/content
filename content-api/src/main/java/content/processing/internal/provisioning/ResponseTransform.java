@@ -4,19 +4,10 @@ import javax.ws.rs.core.Response;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.function.Function;
 
 public class ResponseTransform {
     private static final int EOF = -1;
     private static final int BUFFER_SIZE = 4 * 1024;
-
-    public static Function<Response, byte[]> toByteArray() {
-        return ResponseTransform::toByteArray;
-    }
-
-    public static Function<Response, String> toAString() {
-        return ResponseTransform::toString;
-    }
 
     public static String toString(Response response) {
         return response.readEntity(String.class);
