@@ -15,15 +15,9 @@ project(':content-alternative-implementations') {
    }
 }
 
-project(':content-template-provider') {
-    dependencies {
-        compile project(':content-api')
-    }
-}
-
 project(':content-integration-tests') {
     dependencies {
         testCompile project(':content-api')
-        testCompile project(':content-alternative-implementations'), project(':content-template-provider')
+        testCompile project(':content-alternative-implementations')
     }
 }
