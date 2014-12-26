@@ -1,10 +1,10 @@
 package content.integrationtest;
 
 import content.processing.internal.HttpTemplateProvider;
+import content.processing.internal.NewTemplate;
 import content.processing.internal.ResponseTransform;
 import content.processing.juel.JuelProcessor;
 import content.processing.text.Processor;
-import content.processing.text.internal.Template;
 import org.glassfish.grizzly.PortRange;
 import org.glassfish.grizzly.http.server.CLStaticHttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -50,7 +50,7 @@ public class JuelTest {
 
         String server = "http://" + networkListener.getHost() + ":" + networkListener.getPort();
 
-        textProcessor = new JuelProcessor(new HttpTemplateProvider<>(server, "templates", ResponseTransform.toAString().andThen(Template::new)));
+        textProcessor = new JuelProcessor(new HttpTemplateProvider<>(server, "templates", ResponseTransform.toAString().andThen(NewTemplate::new)));
 
         countingHttpProbe.clearCounters();
     }

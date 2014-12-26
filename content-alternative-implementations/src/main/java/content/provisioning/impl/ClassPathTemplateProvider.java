@@ -1,8 +1,8 @@
 package content.provisioning.impl;
 
 import content.processing.TemplateProvisioningException;
+import content.processing.internal.NewTemplate;
 import content.processing.internal.TemplateProvider;
-import content.processing.text.internal.Template;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +11,7 @@ import java.io.StringWriter;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class ClassPathTemplateProvider implements TemplateProvider<Template> {
+public class ClassPathTemplateProvider<CONTENT> implements TemplateProvider<CONTENT> {
 
     public static final int BUFFER_SIZE = 4 * 1024;
     public static final int EOF = -1;
@@ -22,7 +22,7 @@ public class ClassPathTemplateProvider implements TemplateProvider<Template> {
     }
 
     @Override
-    public Template get(String path) {
+    public NewTemplate<CONTENT> get(String path) {
         String absolutePath = rootPath + path;
         InputStream inputStream = ClassPathTemplateProvider.class.getResourceAsStream(absolutePath);
 
@@ -32,7 +32,7 @@ public class ClassPathTemplateProvider implements TemplateProvider<Template> {
 
         String content = readContent(inputStream);
 
-        return new Template(content);
+        return new NewTemplate(content);
     }
 
     private String readContent(InputStream inputStream) {

@@ -1,8 +1,8 @@
 package content.processing.juel;
 
+import content.processing.internal.NewTemplate;
 import content.processing.internal.TemplateProvider;
 import content.processing.text.Processor;
-import content.processing.text.internal.Template;
 import de.odysseus.el.util.SimpleContext;
 
 import javax.el.ELContext;
@@ -12,23 +12,23 @@ import java.util.Map;
 
 public class JuelProcessor implements Processor {
 
-    private TemplateProvider<Template> templateProvider;
+    private TemplateProvider<String> templateProvider;
 
-    public JuelProcessor(TemplateProvider<Template> templateProvider) {
+    public JuelProcessor(TemplateProvider<String> templateProvider) {
         this.templateProvider = templateProvider;
     }
 
     @Override
     public content.processing.text.Session template(String templatePath) {
-        Template template = templateProvider.get(templatePath);
+        NewTemplate<String> template = templateProvider.get(templatePath);
 
         return new JuelSession(template);
     }
 
     private class JuelSession implements content.processing.text.Session {
-        private final Template template;
+        private final NewTemplate<String> template;
 
-        public JuelSession(Template template) {
+        public JuelSession(NewTemplate<String> template) {
             this.template = template;
         }
 

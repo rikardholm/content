@@ -16,7 +16,7 @@ import java.util.Map;
 public class FreemarkerProcessor implements Processor {
     private final Configuration configuration;
 
-    public FreemarkerProcessor(TemplateProvider<content.processing.text.internal.Template> templateProvider) {
+    public FreemarkerProcessor(TemplateProvider<String> templateProvider) {
         configuration = new Configuration(Configuration.VERSION_2_3_21);
         configuration.setTemplateLoader(new TemplateProviderTemplateLoader(templateProvider));
         configuration.setLocalizedLookup(false);
