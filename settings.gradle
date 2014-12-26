@@ -1,6 +1,6 @@
 rootProject.name = 'content'
 
-include 'content-api', 'content-alternative-implementations', 'content-template-provider'
+include 'content-api', 'content-alternative-implementations'
 
 include 'content-integration-tests'
 
