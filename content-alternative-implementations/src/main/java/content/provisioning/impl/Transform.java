@@ -1,4 +1,4 @@
-package content.processing.internal.provisioning;
+package content.provisioning.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

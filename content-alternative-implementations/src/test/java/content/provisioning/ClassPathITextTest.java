@@ -2,14 +2,13 @@ package content.provisioning;
 
 import content.processing.Processor;
 import content.processing.internal.pdf.ITextProcessor;
-import content.processing.internal.provisioning.Transform;
+import content.provisioning.impl.Transform;
 import content.provisioning.impl.ClassPathTemplateProvider;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 

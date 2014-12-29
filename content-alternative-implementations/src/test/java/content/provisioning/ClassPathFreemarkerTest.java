@@ -3,7 +3,7 @@ package content.provisioning;
 import content.processing.Person;
 import content.processing.Processor;
 import content.processing.freemarker.FreemarkerProcessor;
-import content.processing.internal.provisioning.Transform;
+import content.provisioning.impl.Transform;
 import content.provisioning.impl.ClassPathTemplateProvider;
 import org.junit.Test;
 

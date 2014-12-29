@@ -1,4 +1,4 @@
-package content.processing.internal.provisioning;
+package content.provisioning.impl;
 
 import content.processing.TemplateProvisioningException;
 import content.processing.internal.Template;

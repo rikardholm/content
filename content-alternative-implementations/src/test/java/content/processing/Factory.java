@@ -2,7 +2,7 @@ package content.processing;
 
 import content.processing.freemarker.FreemarkerProcessor;
 import content.processing.internal.TemplateProvider;
-import content.processing.internal.provisioning.HttpTemplateProvider;
+import content.provisioning.impl.HttpTemplateProvider;
 import content.processing.juel.JuelProcessor;
 import content.provisioning.impl.CachingTemplateProviderWrapper;
 
