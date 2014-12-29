@@ -9,6 +9,7 @@ import org.apache.pdfbox.util.PDFTextStripper;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,12 +25,17 @@ public class ClassPathITextTest {
 
         byte[] result = processor.template("my/path/pdf-template.pdf").process(model);
 
+        String text = stripText(result);
+
+        assertTrue(text.contains("Magic Test Forms"));
+    }
+
+    private String stripText(byte[] result) throws IOException {
         PDDocument document = PDDocument.load(new ByteArrayInputStream(result));
 
         String text = new PDFTextStripper().getText(document);
 
         document.close();
-
-        assertTrue(text.contains("Magic Test Forms"));
+        return text;
     }
 }
