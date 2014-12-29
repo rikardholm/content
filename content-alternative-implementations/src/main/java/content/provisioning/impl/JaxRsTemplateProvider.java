@@ -10,12 +10,12 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.util.function.Function;
 
-public class HttpTemplateProvider<CONTENT> implements TemplateProvider<CONTENT> {
+public class JaxRsTemplateProvider<CONTENT> implements TemplateProvider<CONTENT> {
     private final String serverConnection;
     private final String rootPath;
     private final Function<Response, CONTENT> transform;
 
-    public HttpTemplateProvider(String serverConnection, String rootPath, Function<Response, CONTENT> transform) {
+    public JaxRsTemplateProvider(String serverConnection, String rootPath, Function<Response, CONTENT> transform) {
         this.serverConnection = serverConnection;
         this.rootPath = rootPath;
         this.transform = transform;

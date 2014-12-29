@@ -2,7 +2,7 @@ package content.processing;
 
 import content.processing.freemarker.FreemarkerProcessor;
 import content.processing.internal.TemplateProvider;
-import content.provisioning.impl.HttpTemplateProvider;
+import content.provisioning.impl.JaxRsTemplateProvider;
 import content.processing.juel.JuelProcessor;
 import content.provisioning.impl.CachingTemplateProviderWrapper;
 
@@ -20,7 +20,7 @@ public class Factory {
         return new FreemarkerProcessor(templateProvider);
     }
 
-    private static HttpTemplateProvider<String> httpTemplateProvider(String serverConnection) {
-        return new HttpTemplateProvider<>(serverConnection, "templates", response -> response.readEntity(String.class));
+    private static JaxRsTemplateProvider<String> httpTemplateProvider(String serverConnection) {
+        return new JaxRsTemplateProvider<>(serverConnection, "templates", response -> response.readEntity(String.class));
     }
 }
