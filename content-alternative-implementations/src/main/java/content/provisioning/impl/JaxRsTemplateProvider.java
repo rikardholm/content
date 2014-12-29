@@ -1,36 +1,31 @@
 package content.provisioning.impl;
 
-import content.processing.TemplateProvisioningException;
 import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
-import java.util.function.Function;
 
 public class JaxRsTemplateProvider<CONTENT> implements TemplateProvider<CONTENT> {
     private final String serverConnection;
     private final String rootPath;
-    private final Function<Response, CONTENT> transform;
+    private final Class<CONTENT> type;
 
-    public JaxRsTemplateProvider(String serverConnection, String rootPath, Function<Response, CONTENT> transform) {
+    public JaxRsTemplateProvider(String serverConnection, String rootPath, Class<CONTENT> type) {
         this.serverConnection = serverConnection;
         this.rootPath = rootPath;
-        this.transform = transform;
+        this.type = type;
     }
 
     @Override
     public Template<CONTENT> get(String path) {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(serverConnection).path(rootPath).path(path);
-        Response response = webTarget.request().get();
+        CONTENT content = webTarget.request().get(type);
 
-        if (response.getStatus() != 200) {
-            throw new TemplateProvisioningException("Could not fetch template from " + webTarget.getUri() + " Status: " + response.getStatus() + " " + response.getStatusInfo());
-        }
+        //throw new TemplateProvisioningException("Could not fetch template from " + webTarget.getUri() + " Status: " + response.getStatus() + " " + response.getStatusInfo());
 
-        return new Template<>(transform.apply(response));
+        return new Template<>(content);
     }
 }

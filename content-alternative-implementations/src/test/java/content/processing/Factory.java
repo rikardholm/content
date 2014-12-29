@@ -21,6 +21,6 @@ public class Factory {
     }
 
     private static JaxRsTemplateProvider<String> httpTemplateProvider(String serverConnection) {
-        return new JaxRsTemplateProvider<>(serverConnection, "templates", response -> response.readEntity(String.class));
+        return new JaxRsTemplateProvider<>(serverConnection, "templates", String.class);
     }
 }
