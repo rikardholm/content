@@ -19,12 +19,12 @@ public class SpringRestTemplateProvider<CONTENT> implements TemplateProvider<CON
 
     @Override
     public Template<CONTENT> get(String path) {
-        CONTENT response;
+        CONTENT content;
         try {
-            response = restTemplate.getForObject(rootUrl + path, type);
+            content = restTemplate.getForObject(rootUrl + path, type);
         } catch (RestClientException e) {
             throw new TemplateProvisioningException(e);
         }
-        return new Template<>(response);
+        return new Template<>(content);
     }
 }
