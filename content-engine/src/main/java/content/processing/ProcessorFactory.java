@@ -22,6 +22,6 @@ public class ProcessorFactory {
     }
 
     private static <T> TemplateProvider<T> httpTemplateProvider(String serverConnection, Class<T> type) {
-        return new SpringRestTemplateProvider<>(serverConnection, "templates/", type);
+        return new SpringRestTemplateProvider<>(serverConnection, "templates/", type, 10);
     }
 }

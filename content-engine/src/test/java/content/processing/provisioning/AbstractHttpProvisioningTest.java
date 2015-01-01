@@ -1,35 +1,68 @@
 package content.processing.provisioning;
 
 import content.processing.TemplateProvisioningException;
+import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
-import content.test.HttpServerRule;
-import org.junit.ClassRule;
+import content.test.FileStoreTestRule;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractHttpProvisioningTest {
 
-    @ClassRule
-    public static HttpServerRule httpServerRule = new HttpServerRule();
+    @Rule
+    public FileStoreTestRule fileStore = new FileStoreTestRule();
 
-    private final TemplateProvider<byte[]> byteArrayProvider = createByteArrayProvider(httpServerRule.getServerConnection(), "templates");
-    private final TemplateProvider<String> stringProvider = createStringProvider(httpServerRule.getServerConnection(), "templates");
+    private TemplateProvider<String> provider;
+    private String content = "Content of template";
 
     protected abstract TemplateProvider<String> createStringProvider(String serverConnection, String rootPath);
 
-    protected abstract TemplateProvider<byte[]> createByteArrayProvider(String serverConnection, String rootPath);
-
-    @Test
-    public void can_return_a_string() throws Exception {
-        stringProvider.get("test/path/standard-template.jmte");
+    @Before
+    public void setUp() throws Exception {
+        provider = createStringProvider(fileStore.getServerConnection(), "templates");
     }
 
     @Test
-    public void can_return_a_pdf() throws Exception {
-        byteArrayProvider.get("test/path/standard.pdf");
+    public void should_return_an_existing_template() throws Exception {
+        fileStore.addFile("/templates/test/path/template", content.getBytes(UTF_8));
+        Template<String> stringTemplate = provider.get("test/path/template");
+
+        assertEquals(content, stringTemplate.content);
     }
 
     @Test(expected = TemplateProvisioningException.class)
     public void should_throw_a_provision_exception_if_template_is_not_found() throws Exception {
-        stringProvider.get("test/path/non-existing");
+        provider.get("test/path/non-existing");
+    }
+
+    @Test(expected = TemplateProvisioningException.class)
+    public void should_throw_provisioning_exception_on_server_error() throws Exception {
+        fileStore.addServerError("/templates/test/path/error");
+        provider.get("test/path/error");
+    }
+
+    @Test
+    public void should_return_cached_template_on_server_error() throws Exception {
+        fileStore.addFile("/templates/stops/working", content.getBytes(UTF_8));
+        provider.get("stops/working");
+        fileStore.addServerError("/templates/stops/working");
+        Thread.sleep(20);
+        Template<String> template = provider.get("stops/working");
+
+        assertEquals(content, template.content);
+    }
+
+    @Test
+    public void should_use_ifNotModified_to_update_template() throws Exception {
+        fileStore.addFile("/templates/not/modified", content.getBytes(UTF_8));
+        provider.get("not/modified");
+        long responsesBytesTotal = fileStore.statisticsHandler.getResponsesBytesTotal();
+        Thread.sleep(20);
+        provider.get("not/modified");
+        assertEquals(responsesBytesTotal, fileStore.statisticsHandler.getResponsesBytesTotal());
     }
 }
