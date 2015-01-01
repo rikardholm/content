@@ -2,20 +2,31 @@ package content.test;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.junit.rules.ExternalResource;
 
 import java.time.Instant;
 
 public class FileStoreTestRule extends ExternalResource {
 
-    private FileStoreHandler fileStoreHandler = new FileStoreHandler();
-    private Server server;
+    private final FileStoreHandler fileStoreHandler;
+    private final Server server;
+    public final StatisticsHandler statisticsHandler;
+
+    public FileStoreTestRule() {
+        fileStoreHandler = new FileStoreHandler();
+
+        statisticsHandler = new StatisticsHandler();
+        statisticsHandler.setHandler(fileStoreHandler);
+
+        server = new Server(0);
+        server.setHandler(statisticsHandler);
+    }
 
     @Override
     protected void before() throws Throwable {
-        server = new Server(0);
-        server.setHandler(fileStoreHandler);
         server.start();
+
     }
 
     @Override

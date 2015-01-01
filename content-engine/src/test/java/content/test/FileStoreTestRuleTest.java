@@ -3,16 +3,13 @@ package content.test;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.springframework.http.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.Period;
@@ -77,10 +74,6 @@ public class FileStoreTestRuleTest {
         assertEquals(lastModified.toEpochMilli(), responseEntity.getHeaders().getLastModified());
     }
 
-    private ResponseEntity<byte[]> get(String path) {
-        return restTemplate.getForEntity(fileStoreTestRule.getServerConnection() + path, byte[].class);
-    }
-
     @Test
     public void should_be_able_to_replace_file() throws Exception {
         path = "/to/be/replaced";
@@ -141,8 +134,30 @@ public class FileStoreTestRuleTest {
         assertEquals(HttpStatus.NOT_MODIFIED, responseEntity.getStatusCode());
     }
 
+    @Test
+    public void should_provide_a_statistics_handler() throws Exception {
+        assertEquals(0, fileStoreTestRule.statisticsHandler.getRequests());
+
+        fileStoreTestRule.addFile("/some/file", content);
+        get("/some/file");
+
+        assertEquals(1, fileStoreTestRule.statisticsHandler.getRequests());
+    }
+
+    @Test
+    public void should_have_working_statistics() throws Exception {
+        assertEquals(0, fileStoreTestRule.statisticsHandler.getResponses2xx());
+        fileStoreTestRule.addFile("/some/file", content);
+        get("/some/file");
+        assertEquals(1, fileStoreTestRule.statisticsHandler.getResponses2xx());
+    }
+
     private byte[] getObject(String path) {
         return restTemplate.getForObject(fileStoreTestRule.getServerConnection() + path, byte[].class);
+    }
+
+    private ResponseEntity<byte[]> get(String path) {
+        return restTemplate.getForEntity(fileStoreTestRule.getServerConnection() + path, byte[].class);
     }
 
     private Matcher<Exception> httpError(Matcher<HttpStatusCodeException> exceptionMatcher) {

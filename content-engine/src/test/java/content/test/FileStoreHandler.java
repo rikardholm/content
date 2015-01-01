@@ -22,17 +22,20 @@ public class FileStoreHandler extends AbstractHandler {
         Resource resource = files.get(path);
         if (resource == null) {
             response.sendError(404, "File not found");
+            baseRequest.setHandled(true);
             return;
         }
 
         if (resource instanceof Error) {
             response.sendError(500, "Fake internal server error");
+            baseRequest.setHandled(true);
             return;
         }
 
         if (resource instanceof Redirect) {
             Redirect redirect = (Redirect) resource;
             response.sendRedirect(redirect.newPath);
+            baseRequest.setHandled(true);
             return;
         }
 
@@ -40,7 +43,7 @@ public class FileStoreHandler extends AbstractHandler {
 
         long ifModifiedSince = request.getDateHeader("If-Modified-Since");
         if (ifModifiedSince > -1) {
-            if (Instant.ofEpochMilli(ifModifiedSince).isAfter(file.lastModified)) {
+            if (Instant.ofEpochMilli(ifModifiedSince).isBefore(file.lastModified)) {
                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
                 return;
             }
@@ -48,6 +51,7 @@ public class FileStoreHandler extends AbstractHandler {
 
         response.addDateHeader("Last-Modified", file.lastModified.toEpochMilli());
         writeContent(response, file.content);
+        baseRequest.setHandled(true);
     }
 
     public void add(String path, byte[] content, Instant lastModified) {
