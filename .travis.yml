@@ -4,4 +4,5 @@ jdk:
   - oraclejdk8
 cache:
   directories:
+    - $HOME/.gradle/wrapper/dists/
     - $HOME/.gradle/caches/
