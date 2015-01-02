@@ -1,12 +1,14 @@
 package content.processing;
 
-import content.processing.ProcessorFactory;
-import content.processing.TemplateProvisioningException;
-import content.test.HttpServerRule;
+import content.test.filestore.FileStoreTestRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,23 +19,39 @@ public class TextProcessingIntegrationTest {
     private static content.processing.Processor<String> processor;
 
     @ClassRule
-    public static HttpServerRule httpServerRule = new HttpServerRule();
+    public static FileStoreTestRule fileStoreTestRule = new FileStoreTestRule();
 
     private final Map<String, Object> model = new HashMap<>();
 
     @BeforeClass
     public static void createProcessor() {
-        processor = ProcessorFactory.createTextProcessor(httpServerRule.getServerConnection());
+        processor = ProcessorFactory.createTextProcessor(fileStoreTestRule.getServerConnection());
     }
 
     @Test
     public void should_fetch_and_process_standard_template() throws Exception {
+        addFile("/testfiles/standard-template.jmte", "/templates/test/path/standard-template.jmte");
+
         model.put("customer", new Customer("Pelle", 1357));
         model.put("employee", new Employee("Nisse", "08-356 77 00"));
 
         String result = processor.template("test/path/standard-template.jmte").process(model);
 
         assertTrue(result.contains("Ditt konto 1357 har uppdaterats."));
+    }
+
+    private void addFile(String from, String to) throws IOException {
+        InputStream inputStream = getClass().getResourceAsStream(from);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+
+        StringWriter stringWriter = new StringWriter();
+        char[] buffer = new char[1024];
+        int available;
+        while (-1 != (available = inputStreamReader.read(buffer))) {
+            stringWriter.write(buffer, 0, available);
+        }
+
+        fileStoreTestRule.addFile(to, stringWriter.toString());
     }
 
     @Test(expected = TemplateProvisioningException.class)
