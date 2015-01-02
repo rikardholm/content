@@ -1,7 +1,7 @@
 package content;
 
 import com.floreysoft.jmte.Engine;
-import content.test.FileStoreTestRule;
+import content.test.filestore.FileStoreTestRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

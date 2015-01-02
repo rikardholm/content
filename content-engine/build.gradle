@@ -19,6 +19,7 @@ dependencies {
     compile 'com.google.guava:guava:18.0'
 
     testCompile 'junit:junit:4.11'
+    testCompile project(':test-server')
     testCompile 'org.glassfish.grizzly:grizzly-http-server:2.3.17'
     testCompile 'org.eclipse.jetty:jetty-server:9.3.0.M1'
     testCompile 'org.apache.pdfbox:pdfbox:1.8.8'

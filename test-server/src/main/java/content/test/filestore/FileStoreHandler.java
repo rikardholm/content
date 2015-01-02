@@ -1,4 +1,4 @@
-package content.test;
+package content.test.filestore;
 
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;

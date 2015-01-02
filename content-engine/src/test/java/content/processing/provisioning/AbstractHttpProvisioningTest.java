@@ -3,7 +3,7 @@ package content.processing.provisioning;
 import content.processing.TemplateProvisioningException;
 import content.processing.internal.Template;
 import content.processing.internal.TemplateProvider;
-import content.test.FileStoreTestRule;
+import content.test.filestore.FileStoreTestRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

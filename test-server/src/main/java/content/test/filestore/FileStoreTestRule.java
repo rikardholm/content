@@ -1,4 +1,4 @@
-package content.test;
+package content.test.filestore;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;

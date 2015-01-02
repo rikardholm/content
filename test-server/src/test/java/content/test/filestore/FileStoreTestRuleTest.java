@@ -1,4 +1,4 @@
-package content.test;
+package content.test.filestore;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -171,7 +171,7 @@ public class FileStoreTestRuleTest {
         assertEquals("plain", contentType.getSubtype());
         assertEquals(UTF_8, contentType.getCharSet());
 
-        InputStream inputStream = this.getClass().getResourceAsStream("/httpserver/templates/test/path/standard.pdf");
+        InputStream inputStream = this.getClass().getResourceAsStream("/testfiles/standard.pdf");
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         int available;
