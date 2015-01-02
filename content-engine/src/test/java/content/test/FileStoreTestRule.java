@@ -38,6 +38,10 @@ public class FileStoreTestRule extends ExternalResource {
         }
     }
 
+    public void addFile(String path, String content) {
+        fileStoreHandler.add(path, content, Instant.now());
+    }
+
     public void addFile(String path, byte[] content) {
         fileStoreHandler.add(path, content, Instant.now());
     }

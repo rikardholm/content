@@ -29,9 +29,19 @@ public abstract class AbstractHttpProvisioningTest {
     @Test
     public void should_return_an_existing_template() throws Exception {
         fileStore.addFile("/templates/test/path/template", content.getBytes(UTF_8));
-        Template<String> stringTemplate = provider.get("test/path/template");
+        Template<String> template = provider.get("test/path/template");
 
-        assertEquals(content, stringTemplate.content);
+        assertEquals(content, template.content);
+    }
+
+    @Test
+    public void should_use_correct_encoding() throws Exception {
+        String content = "Text med å och ä och ö.";
+        fileStore.addFile("/templates/correct/encoding/utf-8", content);
+
+        Template<String> template = provider.get("/correct/encoding/utf-8");
+
+        assertEquals(content, template.content);
     }
 
     @Test(expected = TemplateProvisioningException.class)

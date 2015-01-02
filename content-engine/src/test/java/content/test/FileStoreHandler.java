@@ -1,5 +1,10 @@
 package content.test;
 
+import org.apache.tika.config.TikaConfig;
+import org.apache.tika.exception.TikaException;
+import org.apache.tika.io.TikaInputStream;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -11,6 +16,8 @@ import java.io.OutputStream;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class FileStoreHandler extends AbstractHandler {
     private Map<String, Resource> files = new HashMap<>();
@@ -43,19 +50,26 @@ public class FileStoreHandler extends AbstractHandler {
 
         long ifModifiedSince = request.getDateHeader("If-Modified-Since");
         if (ifModifiedSince > -1) {
-            if (Instant.ofEpochMilli(ifModifiedSince).isBefore(file.lastModified)) {
+            if (!Instant.ofEpochMilli(ifModifiedSince).isAfter(file.lastModified)) {
                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
                 return;
             }
         }
 
         response.addDateHeader("Last-Modified", file.lastModified.toEpochMilli());
+        response.setContentType(file.contentType);
         writeContent(response, file.content);
         baseRequest.setHandled(true);
     }
 
     public void add(String path, byte[] content, Instant lastModified) {
-        files.put(path, new File(lastModified, content));
+        MediaType mediaType = detectMediaType(content);
+
+        files.put(path, new File(lastModified, content, mediaType.toString()));
+    }
+
+    public void add(String path, String content, Instant lastModified) {
+        files.put(path, new File(lastModified, content.getBytes(UTF_8), "text/plain;charset=utf-8"));
     }
 
     public void delete(String path) {
@@ -77,13 +91,27 @@ public class FileStoreHandler extends AbstractHandler {
         }
     }
 
+    private MediaType detectMediaType(byte[] content) {
+        MediaType mediaType;
+        try {
+            TikaConfig tikaConfig;
+            tikaConfig = new TikaConfig();
+            mediaType = tikaConfig.getDetector().detect(TikaInputStream.get(content), new Metadata());
+        } catch (TikaException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        return mediaType;
+    }
+
     private class File extends Resource {
         public final Instant lastModified;
         public final byte[] content;
+        public final String contentType;
 
-        public File(Instant lastModified, byte[] content) {
+        public File(Instant lastModified, byte[] content, String contentType) {
             this.lastModified = lastModified;
             this.content = content;
+            this.contentType = contentType;
         }
     }
 

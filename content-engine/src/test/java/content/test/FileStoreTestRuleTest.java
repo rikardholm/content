@@ -10,16 +10,16 @@ import org.springframework.http.*;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.SimpleDateFormat;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.time.Instant;
-import java.time.Period;
-import java.util.Locale;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.*;
 
 public class FileStoreTestRuleTest {
 
+    public static final int EOF = -1;
     @Rule
     public FileStoreTestRule fileStoreTestRule = new FileStoreTestRule();
     @Rule
@@ -119,15 +119,14 @@ public class FileStoreTestRuleTest {
     public void should_respect_ifNotModifiedSince_header() throws Exception {
         path = "/was/not/modified";
 
-        Instant lastModified = Instant.parse("2014-11-30T14:00:00.0Z");
-        fileStoreTestRule.addFile(path, content, lastModified);
+        fileStoreTestRule.addFile(path, content, Instant.parse("2014-11-30T14:00:00.0Z"));
 
-        Instant requestDate = lastModified.plus(Period.ofDays(5));
+        ResponseEntity<byte[]> firstResponse = get("/was/not/modified");
+        String lastModified = firstResponse.getHeaders().getFirst(HttpHeaders.LAST_MODIFIED);
+
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-        String headerValue = simpleDateFormat.format(requestDate.toEpochMilli());
-        httpHeaders.add(HttpHeaders.IF_MODIFIED_SINCE, headerValue);
+        httpHeaders.add(HttpHeaders.IF_MODIFIED_SINCE, lastModified);
         HttpEntity<?> request = new HttpEntity<>(httpHeaders);
         ResponseEntity<byte[]> responseEntity = restTemplate.exchange(fileStoreTestRule.getServerConnection() + path, HttpMethod.GET, request, byte[].class);
 
@@ -150,6 +149,42 @@ public class FileStoreTestRuleTest {
         fileStoreTestRule.addFile("/some/file", content);
         get("/some/file");
         assertEquals(1, fileStoreTestRule.statisticsHandler.getResponses2xx());
+    }
+
+    @Test
+    public void should_return_content_as_utf8() throws Exception {
+        String text = "Text med åäö";
+        fileStoreTestRule.addFile("/some/file", text);
+
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(fileStoreTestRule.getServerConnection() + "/some/file", String.class);
+        assertEquals(text, responseEntity.getBody());
+    }
+
+    @Test
+    public void should_set_correct_content_type() throws Exception {
+        fileStoreTestRule.addFile("/some/file", "Text med åäö");
+
+        ResponseEntity<byte[]> responseEntity = get("/some/file");
+        MediaType contentType = responseEntity.getHeaders().getContentType();
+        assertEquals(MediaType.parseMediaType("text/plain;charset=utf-8"), contentType);
+        assertEquals("text", contentType.getType());
+        assertEquals("plain", contentType.getSubtype());
+        assertEquals(UTF_8, contentType.getCharSet());
+
+        InputStream inputStream = this.getClass().getResourceAsStream("/httpserver/templates/test/path/standard.pdf");
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        int available;
+        byte[] buffer = new byte[256];
+        while (EOF != (available = inputStream.read(buffer))) {
+            byteArrayOutputStream.write(buffer, 0, available);
+        }
+
+        fileStoreTestRule.addFile("/some/pdf/file", byteArrayOutputStream.toByteArray());
+
+        ResponseEntity<byte[]> pdfResponse = get("/some/pdf/file");
+        MediaType pdfContentType = pdfResponse.getHeaders().getContentType();
+        assertEquals(MediaType.parseMediaType("application/pdf"), pdfContentType);
     }
 
     private byte[] getObject(String path) {
