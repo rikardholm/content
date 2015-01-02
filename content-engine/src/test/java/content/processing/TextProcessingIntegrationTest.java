@@ -1,4 +1,4 @@
-package content.processing.text;
+package content.processing;
 
 import content.processing.ProcessorFactory;
 import content.processing.TemplateProvisioningException;

@@ -1,4 +1,4 @@
-package content.processing.pdf;
+package content.processing;
 
 import content.processing.ProcessorFactory;
 import content.test.HttpServerRule;
