@@ -1,8 +1,6 @@
 package content.provisioning.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class Transform {
     private static final int EOF = -1;
@@ -11,16 +9,32 @@ public class Transform {
     public static byte[] toByteArray(InputStream inputStream) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byte[] buffer = new byte[BUFFER_SIZE];
-        int read;
+        int available;
         try (InputStream inner = inputStream) {
-            while (EOF != (read = inner.read(buffer))) {
-                byteArrayOutputStream.write(buffer, 0, read);
+            while (EOF != (available = inner.read(buffer))) {
+                byteArrayOutputStream.write(buffer, 0, available);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         return byteArrayOutputStream.toByteArray();
+    }
+
+    public static String toString(InputStream inputStream) {
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        char[] buffer = new char[BUFFER_SIZE];
+        int available;
+        StringWriter stringWriter = new StringWriter();
+        try {
+            while (EOF != (available = inputStreamReader.read(buffer))) {
+                stringWriter.write(buffer, 0, available);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return stringWriter.toString();
     }
 
 }
