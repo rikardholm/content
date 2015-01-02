@@ -11,4 +11,6 @@ dependencies {
     testCompile 'org.glassfish.grizzly:grizzly-http-server:2.3.17'
     testCompile 'commons-io:commons-io:2.4'
     testCompile 'org.apache.pdfbox:pdfbox:1.8.8'
+    testCompile 'org.eclipse.jetty:jetty-server:9.3.0.M1'
+    testCompile 'org.apache.tika:tika-core:1.6'
 }
