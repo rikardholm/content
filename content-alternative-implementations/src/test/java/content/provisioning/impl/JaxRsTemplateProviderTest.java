@@ -2,7 +2,9 @@ package content.provisioning.impl;
 
 import content.processing.internal.TemplateProvider;
 import content.processing.provisioning.AbstractHttpProvisioningTest;
+import org.junit.Ignore;
 
+@Ignore
 public class JaxRsTemplateProviderTest extends AbstractHttpProvisioningTest {
 
     @Override
@@ -10,8 +12,4 @@ public class JaxRsTemplateProviderTest extends AbstractHttpProvisioningTest {
         return new JaxRsTemplateProvider<>(serverConnection, rootPath, String.class);
     }
 
-    @Override
-    protected TemplateProvider<byte[]> createByteArrayProvider(String serverConnection, String rootPath) {
-        return new JaxRsTemplateProvider<>(serverConnection, rootPath, byte[].class);
-    }
 }
