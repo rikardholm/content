@@ -14,12 +14,16 @@ public class FileStoreTestRule extends ExternalResource {
     public final StatisticsHandler statisticsHandler;
 
     public FileStoreTestRule() {
+        this(0);
+    }
+
+    public FileStoreTestRule(int port) {
         fileStoreHandler = new FileStoreHandler();
 
         statisticsHandler = new StatisticsHandler();
         statisticsHandler.setHandler(fileStoreHandler);
 
-        server = new Server(0);
+        server = new Server(port);
         server.setHandler(statisticsHandler);
     }
 
